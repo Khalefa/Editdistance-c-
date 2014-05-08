@@ -20,7 +20,7 @@ namespace RTree
             for (int i = 0; i < DIMENSIONS; i++) s = s + coordinates[i] + ",";
             return s.TrimEnd(',');
         }
-        int DIMENSIONS = 2;
+        int DIMENSIONS = 8;
         internal int[] coordinates;
         public Point(Point p)
         {

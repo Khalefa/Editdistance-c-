@@ -83,7 +83,7 @@ namespace RTree
         private int treeHeight = 1; // leaves are always level 1
         private int rootNodeId = 0;
         private int msize = 0;
-
+        int dims = 0;
         // Enables creation of new nodes
         //private int highestUsedNodeId = rootNodeId; 
         private int highestUsedNodeId = 0;
@@ -126,10 +126,11 @@ namespace RTree
         ///in a node. The default value is half of the MaxNodeEntries value (rounded
         ///down), which is used if the property is not specified or is less than 1.
         ///</param>
-        public RTree(int MaxNodeEntries, int MinNodeEntries)
+        public RTree(int MaxNodeEntries, int MinNodeEntries)//, int dims)
         {
             minNodeEntries = MinNodeEntries;
             maxNodeEntries = MaxNodeEntries;
+            //dims = this.dims;
             init();
         }
 
@@ -673,7 +674,7 @@ namespace RTree
             n.mbr.add(newRect);
 
             
-            for (int d = 0; d < Rectangle.DIMENSIONS; d++)
+            for (int d = 0; d < newRect.min.Length; d++)
             {
                 float tempHighestLow = newRect.min[d];
                 int tempHighestLowIndex = -1; // -1 indicates the new rectangle is the seed

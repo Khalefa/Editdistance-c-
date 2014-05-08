@@ -36,7 +36,7 @@ namespace RTree
          * Number of dimensions in a rectangle. In theory this
          * could be exended to three or more dimensions.
          */
-        internal const int DIMENSIONS = 2;
+        internal  int DIMENSIONS = 8;
 
         /**
          * array containing the minimum value for each dimension; ie { min(x), min(y) }
@@ -50,6 +50,7 @@ namespace RTree
 
         public Rectangle(Point x)
         {
+            DIMENSIONS = x.coordinates.Length;
             min = new int[DIMENSIONS];
             max = new int[DIMENSIONS];
             set(x.coordinates, x.coordinates);
@@ -65,6 +66,7 @@ namespace RTree
          */
         public Rectangle(int x1, int y1, int x2, int y2)//, float z1, float z2)
         {
+            DIMENSIONS = 2;
             min = new int[DIMENSIONS];
             max = new int[DIMENSIONS];
             set(x1, y1, x2, y2);//, z1, z2);
@@ -78,11 +80,7 @@ namespace RTree
          */
         public Rectangle(int[] min, int[] max)
         {
-            if (min.Length != DIMENSIONS || max.Length != DIMENSIONS)
-            {
-                throw new Exception("Error in Rectangle constructor: " +
-                          "min and max arrays must be of length " + DIMENSIONS);
-            }
+            DIMENSIONS = min.Length;
 
             this.min = new int[DIMENSIONS];
             this.max = new int[DIMENSIONS];
@@ -116,6 +114,7 @@ namespace RTree
          */
         internal void set(int[] min, int[] max)
         {
+            DIMENSIONS = min.Length;
             System.Array.Copy(min, 0, this.min, 0, DIMENSIONS);
             System.Array.Copy(max, 0, this.max, 0, DIMENSIONS);
         }
@@ -170,7 +169,7 @@ namespace RTree
         {
             // Every dimension must intersect. If any dimension
             // does not intersect, return false immediately.
-            for (int i = 0; i < DIMENSIONS; i++)
+            for (int i = 0; i < r.min.Length; i++)
             {
                 if (max[i] < r.min[i] || min[i] > r.max[i])
                 {
@@ -182,7 +181,15 @@ namespace RTree
         public Rectangle extend(float increment)
         {
             int d=(int)Math.Ceiling(increment/2);
-            return new Rectangle(min[0] - d, min[1] - d, max[0] + d, max[1] + d);
+            int[] tmin = new int[DIMENSIONS];
+            int[] tmax = new int[DIMENSIONS];
+            for (int i = 0; i < min.Length; i++)
+            {
+                tmin[i] = min[i] - d;
+                tmax[i] = max[i] + d;
+            }
+            return new Rectangle(tmin, tmax);
+            //return new Rectangle(min[0] - d, min[1] - d, max[0] + d, max[1] + d);
         }
         /**
          * Determine whether this rectangle contains the passed rectangle
@@ -322,8 +329,9 @@ namespace RTree
          */
         internal float enlargement(Rectangle r)
         {
-            float enlargedArea = (Math.Max(max[0], r.max[0]) - Math.Min(min[0], r.min[0])) *
-                                 (Math.Max(max[1], r.max[1]) - Math.Min(min[1], r.min[1]));
+            float enlargedArea =1;
+            for(int i=0;i<min.Length;i++)
+                enlargedArea *= (Math.Max(max[i], r.max[i]) - Math.Min(min[i], r.min[i]));
 
             return enlargedArea - area();
         }
@@ -335,7 +343,10 @@ namespace RTree
          */
         internal float area()
         {
-            return (max[0] - min[0]) * (max[1] - min[1]);
+            float a = 1;
+            for (int i = 0; i < min.Length; i++)
+                a = a * (max[i] - min[i]);
+                return a;
         }
 
         /**

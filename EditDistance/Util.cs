@@ -37,7 +37,7 @@ namespace EditDistance
             int x;
             x = 0;
             
-            double d = Math.Pow(2, l + 1);
+            double d = Math.Pow(2, l );
             if (d > ALPHABET_SIZE) d = ALPHABET_SIZE;
             double range = Math.Ceiling(ALPHABET_SIZE / d);
             int r = (int)range;

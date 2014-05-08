@@ -13,6 +13,8 @@ namespace EditDistance
     class Program
     {
         static RTree<string>[] rts;
+        public static int level = 2;
+        public static bool exact = true;
         static ArrayList readinput(string file)
         {
             HashSet<string> words = new HashSet<string>();
@@ -53,7 +55,7 @@ namespace EditDistance
 
             }
 
-
+            long word_c = 0;
             //SpatialIndex((string)words[111]);
             DateTime t0 = DateTime.Now;
             TimeSpan ts = t0 - st;
@@ -64,7 +66,7 @@ namespace EditDistance
             foreach (String w in words)
             {
                 DateTime tt0 = DateTime.Now;
-                List<Rectangle> rects = getPoint(w, 1, 1);
+                List<Rectangle> rects = getPoint(w, 1);
                 HashSet<string> allwords = new HashSet<string>();
                 foreach (string s in words) allwords.Add(s);
                 int i = 0;
@@ -78,29 +80,37 @@ namespace EditDistance
                 }
                 TimeSpan tts1 = DateTime.Now - tt0;
                 Console.WriteLine(w + " :" + allwords.Count + " " + tts1);
+                word_c += allwords.Count;
                 ii++;
                 if (ii > 100) break;
             }
             DateTime t2 = DateTime.Now;
             TimeSpan ts2 = t2 - t1;
-
+            Console.WriteLine("level " + level + " exact " + exact);
             Console.WriteLine(ts);
-            Console.WriteLine(ts1);
+            //Console.WriteLine(ts1);
             Console.WriteLine(ts2);
+            Console.WriteLine("Count " + word_c);
         }
         static void hashIndex(string s)
         {
 
         }
-        static List<Rectangle> getPoint(string w, int j, int d)
+        static List<Rectangle> getPoint(string w,  int d)
         {
             List<Rectangle> pnts = new List<Rectangle>();
             int[] hist = Util.hist(w);
-            int[] m = Util.summarize_hist(hist, j);
+            
 
-            for (int i = 0; i < m.Length / 2; i++)
+            for (int i = 0; i <=level; i++)
             {
-                Point p = new Point(m[i], m[i + m.Length / 2]);
+                int[] m = Util.summarize_hist(hist, i);
+                Point p=null;
+                if(exact)
+                    p = new Point(m, m.Length);
+                else
+                 
+                p = new Point(m[0], m[0 + m.Length / 2]);
                 Rectangle r = new Rectangle(p);
 
                 pnts.Add(r.extend(d));
@@ -114,14 +124,20 @@ namespace EditDistance
             //a.Add(0);
             //a.Add(1);
             //a.Add(2);
-            a.Add(1);
+            for(int i=0;i<=level;i++)
+            a.Add(i);
+            //a.Add(2);
             foreach (int j in a)
             {
                 int[] m = Util.summarize_hist(hist, j);
-
-                for (int i = 0; i < m.Length / 2; i++)
+                //rts[j].Add(new Rectangle(new Point(m[0], m[0 + m.Length / 2])), w);
+               // rts[j].Add(new Rectangle(new Point(m,m.Length)), w);
+             //   for (int i = 0; i < m.Length / 2; i++)
                 {
-                    rts[i].Add(new Rectangle(new Point(m[i], m[i + m.Length / 2])), w);
+                    if (exact)
+                        rts[j].Add(new Rectangle(new Point(m, m.Length)), w);
+                    else                    
+                    rts[j].Add(new Rectangle(new Point(m[0], m[0 + m.Length / 2])), w);
                 }
             }
 
@@ -138,8 +154,8 @@ namespace EditDistance
             int[] m4 = Util.summarize_hist(hist, 4);
 
 
-            rts = new RTree<string>[10];
-            for (int i = 0; i < 10; i++) rts[i] = new RTree<string>();
+            rts = new RTree<string>[32];
+            for (int i = 0; i < 32; i++) rts[i] = new RTree<string>(100,50);
             run();
 
 
