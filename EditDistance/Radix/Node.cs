@@ -17,14 +17,32 @@ namespace RadixTree
         {
             Label = "";
             SubNodes = new List<Node>();
+            id = Tree.id_counter++;
         }
 
         public Node(string l)
         {
             Label = l;
             SubNodes = new List<Node>();
+            id = Tree.id_counter++;
+        }
+        public override string ToString()
+        {
+            return Label;
         }
         public string Label;
-        public List<Node> SubNodes;  
+        public List<Node> SubNodes;
+        public int id;
+        public override bool Equals(object obj)
+        {
+            Node n = (Node)obj;
+            if (n.id == id) return true;
+            return false;
+        }
+        public override int GetHashCode()
+        {
+            return id;
+        }
     }
+    
 }

@@ -24,28 +24,15 @@ namespace EditDistance
             r.Close();
             return new ArrayList(words.ToArray<string>());
         }
-        
-       
-       
-        static void hashIndex(string s)
-        {
 
-        }
-    
-   
         static void Main(string[] args)
         {
-            string s = "beautiful";
-            int[] hist = Util.hist(s);
-            int[] m0 = Util.summarize_hist(hist, 0);
-            int[] m1 = Util.summarize_hist(hist, 1);
-            int[] m2 = Util.summarize_hist(hist, 2);
-            int[] m3 = Util.summarize_hist(hist, 3);
-            int[] m4 = Util.summarize_hist(hist, 4);
-
-
-           
-
+            string []filename = new string[10];
+            filename[0]= @"C:\Users\khalefa\SkyDrive\Alex Work\Work\Edit Distance\datasets\dblpall.format";
+            filename[1] = @"c:\data\tiny.txt";
+             filename[2]=@"c:\data\words.txt";
+            ArrayList words = readinput(filename[2]);
+            Radix.engine.run(words);
 
         }
     }

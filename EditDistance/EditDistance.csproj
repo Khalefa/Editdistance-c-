@@ -41,9 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Global.cs" />
     <Compile Include="Grams\grams.cs" />
+    <Compile Include="Radix\ActiveNodes.cs" />
+    <Compile Include="Radix\engine.cs" />
     <Compile Include="Radix\Node.cs" />
+    <Compile Include="Radix\PathStack.cs" />
     <Compile Include="Radix\Tree.cs" />
+    <Compile Include="Radix\Trie.cs" />
+    <Compile Include="Radix\TrieNode.cs" />
     <Compile Include="Rtree\engine.cs" />
     <Compile Include="Rtree\Node.cs" />
     <Compile Include="Program.cs" />

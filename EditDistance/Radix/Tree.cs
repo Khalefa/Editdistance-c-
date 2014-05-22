@@ -7,11 +7,15 @@ namespace RadixTree
 {
     public class Tree
     {
+        public static int id_counter = 0;
         /// <summary>
         /// store the tree's root
         /// </summary>
         private Node _root;
-
+        public Node root
+        {
+            get { return _root; }
+        }
         /// <summary>
         /// construct a new tree with it's root
         /// </summary>
@@ -68,7 +72,9 @@ namespace RadixTree
                         }
                     if (inserted == false)
                     {
-                        curNode.SubNodes.Add(new Node(newWordPart));
+                        var p=new  Node(newWordPart);
+                        curNode.SubNodes.Add(p);
+                        //p.parent = curNode;
                     }
                 }
                 else if(matches < wordPart.Length)
@@ -89,9 +95,11 @@ namespace RadixTree
 
                     curNode.SubNodes.Clear();
                     curNode.SubNodes.Add(newNodePreviousLabel);
+                    //newNodePreviousLabel.parent = curNode;
 
                     var newNodeNewLabel = new Node(branchNewLabel);
                     curNode.SubNodes.Add(newNodeNewLabel);
+                    //newNodeNewLabel.parent = curNode;
                 }
                 else if (matches == curNode.Label.Length)
                 {
@@ -103,6 +111,7 @@ namespace RadixTree
                     string newNodeLabel = curNode.Label.Substring(curNode.Label.Length, wordPart.Length);
                     var newNode = new Node(newNodeLabel);
                     curNode.SubNodes.Add(newNode);
+                    //newNode.parent = curNode;
                 }
         }
 
@@ -297,5 +306,27 @@ namespace RadixTree
                     }
             }
         }
+        ///<summary>
+        ///Get all nodes in the tree
+        ///</summary>
+        public List<Node> getNodes()
+        {
+            List<Node> nodes=new List<Node>(); 
+            Queue<Node> queue=new Queue<Node>();
+            queue.Enqueue(_root);
+            while (queue.Count > 0)
+            {
+                Node r = queue.Dequeue();
+                nodes.Add(r);
+                foreach (Node n in r.SubNodes)
+                {
+                    queue.Enqueue(n);
+                    
+                }
+            }
+            return nodes;
+        }
     }
+    
+
 }
