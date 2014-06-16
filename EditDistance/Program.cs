@@ -34,13 +34,16 @@ namespace EditDistance
             filename[2] = @"c:\data\tiny.txt";
             filename[3] = @"c:\data\words.txt";
             filename[4] = dir + "word.format.1000";
-            ArrayList words = readinput(filename[4]);
+            ArrayList words = readinput(filename[0]);
             DateTime t = DateTime.Now;
-            passjoin.compute(words, 1);
+            passjoin.ComputeMultiMatch (words, 1);
             TimeSpan ts = DateTime.Now - t;
             Console.Write(ts);
             //Radix.engine.run(words);
-            ArrayList m= passjoin.getlengths(4, 1);
+            //ArrayList m= passjoin.getlengths(9, 6);
+            //passjoin.parition("sad", 1);
+            //passjoin.parition("sads", 1);
+            //ArrayList i= passjoin.permute(m);
         }
     }
 }
