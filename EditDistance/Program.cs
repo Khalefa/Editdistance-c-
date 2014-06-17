@@ -36,7 +36,7 @@ namespace EditDistance
             filename[4] = dir + "word.format.1000";
             ArrayList words = readinput(filename[0]);
             DateTime t = DateTime.Now;
-            passjoin.ComputeMultiMatch (words, 1);
+            passjoin.ComputeMultiMatch (words, 4);
             TimeSpan ts = DateTime.Now - t;
             Console.Write(ts);
             //Radix.engine.run(words);
