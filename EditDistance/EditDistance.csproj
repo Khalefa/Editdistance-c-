@@ -44,6 +44,7 @@
     <Compile Include="Global.cs" />
     <Compile Include="Grams\grams.cs" />
     <Compile Include="lev.cs" />
+    <Compile Include="Passjoin\passjoin2.cs" />
     <Compile Include="Passjoin\passjoin.cs" />
     <Compile Include="Radix\ActiveNodes.cs" />
     <Compile Include="Radix\engine.cs" />

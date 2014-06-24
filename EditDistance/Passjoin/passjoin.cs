@@ -43,12 +43,12 @@ namespace EditDistance.Passjoin
                 if (s == null) return;
                 if (ht.ContainsKey(s))
                 {
-                    ArrayList l = (ArrayList)ht[s];
+                    List<int> l = (List<int>)ht[s];
                     l.Add(indx);
                 }
                 else
                 {
-                    ArrayList l = new ArrayList();
+                    List<int> l = new List<int>();
                     l.Add(indx);
                     ht.Add(s, l);
                 }
@@ -67,10 +67,10 @@ namespace EditDistance.Passjoin
                 else return String.Compare(sx, sy);
             }
         }
-        public static string[] parition(string s, int th)
+        public static string[] parition(string s, int th, int eps)
         {
-            string[] a = new string[th + 1];
-            int d = s.Length / (th + 1);
+            string[] a = new string[th + eps];
+            int d = s.Length / (th + eps);
             string p = "";
             int j = 0;
             int k = 0;
@@ -144,64 +144,89 @@ namespace EditDistance.Passjoin
         //find candidate words
         static public void ComputeMultiMatch(ArrayList words, int th)
         {
+            //            HashSet<string> leftwords = new HashSet<string>();
+            //          HashSet<string> rightwords = new HashSet<string>();
+            int epslion = 1;
             bool print = false;
             long count = 0;
             long exact_count = 0;
-            HashSet<pair> pairs = new HashSet<pair>();
+            // HashSet<pair> pairs = new HashSet<pair>();
             words.Sort(new StringComparer());
-            int progress =(int) Math.Ceiling (words.Count / 100.0);
-            
-            for (int indx = (int)(0.8*words.Count); indx < words.Count; indx++)
-            {
+            int progress = (int)Math.Ceiling(words.Count / 100.0);
 
+            for (int indx = (int)(0); indx < words.Count; indx++)
+            {
                 if (indx % progress == 0)
                 {
                     Console.WriteLine(indx + " " + words.Count + "(" + 100.0 * indx / words.Count + ")");
                     Console.WriteLine(exact_count + " " + count + " (" + exact_count * 100.0 / count + ")");
                 }
-             //   if (indx / progress > 10) break;
                 string s = (string)words[indx];
                 if (print) Console.WriteLine(s);
-                //iterate through inverteed index                
+                //iterate through inverteed index    
+                //Dictionary<int, int> matches = new Dictionary<int, int>();
+                HashSet<int> matches = new HashSet<int>();
+                HashSet<int> pairs = new HashSet<int>();
                 for (int l = s.Length - th; l <= s.Length; l++)
                 {
-                    for (int i = 0; i < th + 1; i++)
-                    {                        
+                    for (int i = 0; i < th + epslion; i++)
+                    {
                         invertedList L = GetList(i, l);
                         if (L == null) continue;
                         if (L.length == 0) continue;
                         int pi = L.start;
-                        int delta=s.Length-l;
+                        int delta = s.Length - l;
                         //iterate throw
-                        int lowerbound=(int) Math.Max(pi - (i + 1 - 1),pi+delta-(th-i));
+                        int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th - i));
                         lowerbound = (int)Math.Max(0, lowerbound);
-                        int upperbound=(int) Math.Min(pi + (i + 1 - 1),pi+delta+(th-i));
-                        upperbound=(int) Math.Min(s.Length-L.length,upperbound);
+                        int upperbound = (int)Math.Min(pi + (i + 1 - 1), pi + delta + (th - i));
+                        upperbound = (int)Math.Min(s.Length - L.length, upperbound);
 
                         for (int k = lowerbound; k <= upperbound; k++)
-                        {                        
+                        {
                             string tmp = s.Substring(k, L.length);
                             if (print) Console.Write(tmp + " ");
                             if (L.ht.ContainsKey(tmp))
                             {
-                                ArrayList il = (ArrayList)L.ht[tmp];
+                                List<int> il = (List<int>)L.ht[tmp];
+
                                 foreach (int x in il)
-                                    pairs.Add(new pair(indx, x));
+                                {
+                                    if (!matches.Add(x))
+                                        pairs.Add(x);
+                                }
+                                #region app1
+                                /*string p1 = "";
+                                string p2 = "";
+                                if (k > 1) p1 = s.Substring(0, k - 1);
+                                if (k + L.length < s.Length) p2 = s.Substring(k + L.length);
+                                int sum = 0;
+                                foreach (int x in il)
+                                {
+                                  //  pairs.Add(new pair(indx, x));
+                                    sum = sum + x;
+                                    //L.start
+                                    // leftwords .Add(w.Substring (0,L.start));
+                                    //rightwords.Add(w.Substring(L.start+L.length));
+                                }*/
+                                #endregion
                             }
                         }
-                        if(print)Console.WriteLine();
+                        if (print) Console.WriteLine();
                     }
                 }
+
                 count += pairs.Count;
-                foreach (pair p in pairs)
+                //exact_count += pairs.Count;
+                foreach (int p in pairs)
                 {
-                    if (Lev.editdistance((string)words[p.i], (string)words[p.l], th) <= th)
-                        exact_count++;     
+                    //if (Lev.editdistance((string)words[indx], (string)words[p], th) <= th)
+                        exact_count++;
                 }
-                pairs.Clear();
+                //pairs.Clear();
                 #region parition
                 //parition s into strings
-                string[] ps = parition(s, th);
+                string[] ps = parition(s, th, epslion);
                 //adding parition to the index
                 int m = 0;
                 int start = 0;
@@ -222,7 +247,105 @@ namespace EditDistance.Passjoin
             }
             Console.WriteLine(exact_count);
             Console.WriteLine(count);
+            // ComputeMultiMatch(newowrds, th);
         }
+        static public void ComputeMultiMatch0(ArrayList words, int th)
+        {
+            //            HashSet<string> leftwords = new HashSet<string>();
+            //          HashSet<string> rightwords = new HashSet<string>();
+
+            bool print = false;
+            long count = 0;
+            long exact_count = 0;
+            HashSet<pair> pairs = new HashSet<pair>();
+            words.Sort(new StringComparer());
+            int progress = (int)Math.Ceiling(words.Count / 100.0);
+
+            for (int indx = (int)(0); indx < words.Count; indx++)
+            {
+                if (indx % progress == 0)
+                {
+                    Console.WriteLine(indx + " " + words.Count + "(" + 100.0 * indx / words.Count + ")");
+                    //   Console.WriteLine(exact_count + " " + count + " (" + exact_count * 100.0 / count + ")");
+                }
+                //   if (indx / progress > 10) break;
+                string s = (string)words[indx];
+                //if (s.Length < 8) continue;
+                if (print) Console.WriteLine(s);
+                //iterate through inverteed index                
+                for (int l = s.Length - th; l <= s.Length; l++)
+                {
+                    for (int i = 0; i < th + 1; i++)
+                    {
+                        invertedList L = GetList(i, l);
+                        if (L == null) continue;
+                        if (L.length == 0) continue;
+                        int pi = L.start;
+                        int delta = s.Length - l;
+                        //iterate throw
+                        int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th - i));
+                        lowerbound = (int)Math.Max(0, lowerbound);
+                        int upperbound = (int)Math.Min(pi + (i + 1 - 1), pi + delta + (th - i));
+                        upperbound = (int)Math.Min(s.Length - L.length, upperbound);
+
+                        for (int k = lowerbound; k <= upperbound; k++)
+                        {
+                            string tmp = s.Substring(k, L.length);
+                            if (print) Console.Write(tmp + " ");
+                            if (L.ht.ContainsKey(tmp))
+                            {
+                                ArrayList il = (ArrayList)L.ht[tmp];
+                                string p1 = "";
+                                string p2 = "";
+                                if (k > 1) p1 = s.Substring(0, k - 1);
+                                if (k + L.length < s.Length) p2 = s.Substring(k + L.length);
+
+                                foreach (int x in il)
+                                {
+                                    pairs.Add(new pair(indx, x));
+                                    string w = (string)words[x];
+                                    //L.start
+                                    // leftwords .Add(w.Substring (0,L.start));
+                                    //rightwords.Add(w.Substring(L.start+L.length));
+                                }
+                            }
+                        }
+                        if (print) Console.WriteLine();
+                    }
+                }
+                //       count += pairs.Count;
+                /*foreach (pair p in pairs)
+                {
+                    //if (Lev.editdistance((string)words[p.i], (string)words[p.l], th) <= th)
+                        exact_count++;     
+                }*/
+                pairs.Clear();
+                #region parition
+                //parition s into strings
+                string[] ps = parition(s, th, 1);
+                //adding parition to the index
+                int m = 0;
+                int start = 0;
+                foreach (string p in ps)
+                {
+                    //get the invert list if exists; otherwise creates a new one
+                    invertedList L = getList(m, s.Length);
+                    L.add(p, indx);
+                    if (p != null)
+                    {
+                        L.length = p.Length;
+                        L.start = start;
+                        start = start + p.Length;
+                    }
+                    m++;
+                }
+                #endregion
+            }
+            Console.WriteLine(exact_count);
+            Console.WriteLine(count);
+            // ComputeMultiMatch(newowrds, th);
+        }
+
         #region old
         static ArrayList ProcessWord(string s, string word, int th)
         {
@@ -248,8 +371,9 @@ namespace EditDistance.Passjoin
         }
         static public void compute(ArrayList words, int th)
         {
-            HashSet<pair> pairs = new HashSet<pair>();
-
+            //HashSet<p> pairs = new HashSet<pair>();
+            //Hashtable<
+            Hashtable pairs = new Hashtable();
             words.Sort(new StringComparer());
             for (int i = 0; i < words.Count; i++)
             {
@@ -263,11 +387,13 @@ namespace EditDistance.Passjoin
                 {
                     ArrayList A = ProcessWord(s, w, th);
                     foreach (int a in A)
-                        pairs.Add(new pair(i, a));
+                    {
+                        pairs.Add(i, a);
+                    }
                 }
                 #region parition
                 //parition s into strings
-                string[] ps = parition(s, th);
+                string[] ps = parition(s, th, 1);
                 //adding parition to the index
                 int m = 0;
                 int start = 0;
@@ -287,7 +413,7 @@ namespace EditDistance.Passjoin
                 #endregion
                 foreach (pair p in pairs)
                 {
-                   //   if (Lev.editdistance((string)words[p.i], (string)words[p.l], th) <= th)
+                    //   if (Lev.editdistance((string)words[p.i], (string)words[p.l], th) <= th)
                     Console.WriteLine(words[p.i] + " " + words[p.l]);
                 }
             }
