@@ -61,6 +61,7 @@
     <Compile Include="Rtree\Rectangle.cs" />
     <Compile Include="Rtree\RTree.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="word.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

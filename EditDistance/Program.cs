@@ -35,12 +35,22 @@ namespace EditDistance
             filename[3] = @"c:\data\words.txt";
             filename[4] = dir + "word.format.1000";
             filename[5] = @"c:\data\paper.txt";
-            int indx = 1;
+            int indx = 0;
             ArrayList words = readinput(filename[indx]);
-            DateTime t = DateTime.Now;
-            passjoinII.ComputeMultiMatch (words, 3,1);
-            TimeSpan ts = DateTime.Now - t;
-            Console.Write(ts);
+            //get number of grams
+          /*  DateTime t1 = DateTime.Now;
+            Grams.Gram.GetGrams(words, 2);
+            TimeSpan ts1 = DateTime.Now - t1;
+            Console.Write(ts1);
+            */
+            for (int e = 1; e < 8; e++)
+            {
+                DateTime t = DateTime.Now;
+                passjoinII.ComputeMultiMatch(words, 3, e);
+                //passjoinII.ComputeMultiMatch_old (words, 3);
+                TimeSpan ts = DateTime.Now - t;
+                Console.Write(ts);
+            }
             //Radix.engine.run(words);
             //ArrayList m= passjoin.getlengths(9, 6);
             //passjoin.parition("sad", 1);

@@ -8,13 +8,16 @@ namespace EditDistance.Grams
 {
     class Gram
     {
-       
-        static void GetGrams(ArrayList words, int q)
+
+        public static void GetGrams(ArrayList words, int q)
         {
+            long cc = 0;
             Hashtable ht = new Hashtable();
             foreach (string w in words)
             {
-                foreach (string ws in Util.grams(w, q))
+                string [] t=Util.grams(w, q);
+                cc+=t.Length;
+                foreach (string ws in t)
                 {
                     if (!ht.ContainsKey(ws))
                     {
@@ -31,17 +34,23 @@ namespace EditDistance.Grams
                 }
 
             }
+            Console.WriteLine(ht.Count);
+            //   return;
+            long c = 0;
             foreach (string w in words)
             {
-                long c = 0;
+
                 HashSet<string> hs = new HashSet<string>();
+                //ArrayList l = new ArrayList();
                 foreach (string ws in Util.grams(w, q))
                 {
                     ArrayList l = (ArrayList)ht[ws];
-                    foreach (string s in l)
-                        if (!hs.Contains(s)) hs.Add(s);
+                    c += l.Count;
+                    //foreach (string s in l) ;
+
+                    // hs.Add(s);
                 }
-                Console.WriteLine(w + " " + hs.Count);
+                //  Console.WriteLine(w + " " + hs.Count);
             }
 
         }
