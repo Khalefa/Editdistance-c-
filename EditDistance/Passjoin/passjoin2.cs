@@ -227,57 +227,60 @@ namespace EditDistance.Passjoin
                 {
                     Console.Write(".");
                 }
-             /*if (indx % progress == 0)
-             {
-                 float r = (float)100.0 * indx / words.Count;
-                 Console.Write("(" + r.ToString("0.00") + ")");
-                 for (int lvl = 0; lvl < epslion + 1; lvl++)
-                     Console.Write(count[lvl] + "\t");
-                 Console.WriteLine();
-             }*/
+                /*if (indx % progress == 0)
+                {
+                    float r = (float)100.0 * indx / words.Count;
+                    Console.Write("(" + r.ToString("0.00") + ")");
+                    for (int lvl = 0; lvl < epslion + 1; lvl++)
+                        Console.Write(count[lvl] + "\t");
+                    Console.WriteLine();
+                }*/
                 for (int i = 0; i < epslion + 1; i++)
                     count[i] = 0;
-
-
+                HashSet<string> ss = new HashSet<string>();
+                ss.Add("whyalla");
                 string s = (string)words[indx];
 
                 HashSet<int>[] matches = new HashSet<int>[epslion];
                 for (int i = 0; i < epslion; i++) matches[i] = new HashSet<int>();
                 #region matches
-                for (int l = s.Length - th; l <= s.Length; l++)
+                if (ss.Contains(s))
                 {
-                    for (int i = 0; i < th + epslion; i++)
+                    for (int l = s.Length - th; l <= s.Length; l++)
                     {
-                        invertedList L = GetList(i, l);
-                        if (L == null) continue;
-                        if (L.length == 0) continue;
-                        int pi = L.start;
-                        int delta = s.Length - l;
-                        //iterate throw
-                        int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th - i));
-                        lowerbound = (int)Math.Max(0, lowerbound);
-                        int upperbound = (int)Math.Min(pi + (i + 1 - 1), pi + delta + (th - i));
-                        upperbound = (int)Math.Min(s.Length - L.length, upperbound);
-
-                        for (int k = lowerbound; k <= upperbound; k++)
+                        for (int i = 0; i < th + epslion; i++)
                         {
-                            string tmp = s.Substring(k, L.length);
-                            if (L.ht.ContainsKey(tmp))
-                            {
-                                List<int> il = (List<int>)L.ht[tmp];
+                            invertedList L = GetList(i, l);
+                            if (L == null) continue;
+                            if (L.length == 0) continue;
+                            int pi = L.start;
+                            int delta = s.Length - l;
+                            //iterate throw
+                            int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th - i));
+                            lowerbound = (int)Math.Max(0, lowerbound);
+                            int upperbound = (int)Math.Min(pi + (i + 1 - 1), pi + delta + (th - i));
+                            upperbound = (int)Math.Min(s.Length - L.length, upperbound);
 
-                                foreach (int x in il)
+                            for (int k = lowerbound; k <= upperbound; k++)
+                            {
+                                string tmp = s.Substring(k, L.length);
+                                if (L.ht.ContainsKey(tmp))
                                 {
-                                    int level = 0;
-                                    while (!matches[level].Add(x))
+                                    List<int> il = (List<int>)L.ht[tmp];
+
+                                    foreach (int x in il)
                                     {
-                                        level++;
-                                        if (level >= epslion) break;
+                                        int level = 0;
+                                        while (!matches[level].Add(x))
+                                        {
+                                            level++;
+                                            if (level >= epslion) break;
+                                        }
                                     }
                                 }
-                            }
-                        } //
+                            } //
 
+                        }
                     }
                 }
                 #endregion
@@ -311,12 +314,15 @@ namespace EditDistance.Passjoin
                 }
                 #endregion
                 //save results
-                sw.Write(indx + "\t" + words[indx] + "\t");
-                for (int i = 0; i < epslion + 1; i++)
+                if (ss.Contains(s))
                 {
-                    sw.Write(count[i]+"\t");
+                    sw.Write(indx + "\t" + words[indx] + "\t");
+                    for (int i = 0; i < epslion + 1; i++)
+                    {
+                        sw.Write(count[i] + "\t");
+                    }
+                    sw.WriteLine();
                 }
-                sw.WriteLine();
             }
             sw.Close();
         }
