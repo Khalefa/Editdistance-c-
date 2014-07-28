@@ -35,7 +35,7 @@ namespace EditDistance.Grams
 
             }
             Console.WriteLine(ht.Count);
-            //   return;
+              return;
             long c = 0;
             foreach (string w in words)
             {

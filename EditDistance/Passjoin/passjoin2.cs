@@ -56,7 +56,7 @@ namespace EditDistance.Passjoin
             }
         }
         public static Hashtable invertedlists = new Hashtable();//stores the inverted listes the keu is a composite of length and 
-
+        public static Hashtable invlists = new Hashtable();
         class StringComparer : IComparer
         {
             public int Compare(object x, object y)
@@ -81,7 +81,7 @@ namespace EditDistance.Passjoin
                 j++;
                 if (j >= d)
                 {
-                    if (k < th)
+                    if (k < (th + eps) - 1)
                         k++;
                     j = 0;
                     p = "";
@@ -103,28 +103,28 @@ namespace EditDistance.Passjoin
             a[th] = sl - k;
             return a;
         }
-        static invertedList GetList(int i, int len)
+        static invertedList GetList(Hashtable ht, int i, int len)
         {
             pair x = new pair();
             x.l = len;
             x.i = i;
             invertedList L = null;
-            if (invertedlists.ContainsKey(x))
-                L = (invertedList)invertedlists[x];
+            if (ht.ContainsKey(x))
+                L = (invertedList)ht[x];
             return L;
         }
-        static invertedList getList(int i, int len)
+        static invertedList getList(Hashtable ht, int i, int len)
         {
             pair x = new pair();
             x.l = len;
             x.i = i;
             invertedList L = null;
-            if (invertedlists.ContainsKey(x))
-                L = (invertedList)invertedlists[x];
+            if (ht.ContainsKey(x))
+                L = (invertedList)ht[x];
             else
             {
                 L = new invertedList();
-                invertedlists.Add(x, L);
+                ht.Add(x, L);
             }
 
             return L;
@@ -155,7 +155,7 @@ namespace EditDistance.Passjoin
                 {
                     for (int i = 0; i < th + 1; i++)
                     {
-                        invertedList L = GetList(i, l);
+                        invertedList L = GetList(invertedlists, i, l);
                         if (L == null) continue;
                         if (L.length == 0) continue;
                         int pi = L.start;
@@ -200,7 +200,7 @@ namespace EditDistance.Passjoin
                 foreach (string p in ps)
                 {
                     //get the invert list if exists; otherwise creates a new one
-                    invertedList L = getList(m, s.Length);
+                    invertedList L = getList(invertedlists, m, s.Length);
                     L.add(p, indx);
                     if (p != null)
                     {
@@ -213,21 +213,8 @@ namespace EditDistance.Passjoin
                 #endregion
             }
         }
-        static public void ComputeMultiMatch(ArrayList words, int th, int epslion)
-        {
-            long[] count = new long[epslion + 1];
 
-            words.Sort(new StringComparer());
-            int progress = (int)Math.Ceiling(words.Count / 100.0);
-            StreamWriter sw = new StreamWriter("c:\\data\\out.txt", true);
-            sw.WriteLine("count:" + words.Count + "\tth:" + th + "\te" + epslion);
-            for (int indx = (int)(0); indx < words.Count; indx++)
-            {
-                if (indx % progress == 0)
-                {
-                    Console.Write(".");
-                }
-                /*if (indx % progress == 0)
+        /*if (indx % progress == 0)
                 {
                     float r = (float)100.0 * indx / words.Count;
                     Console.Write("(" + r.ToString("0.00") + ")");
@@ -235,39 +222,72 @@ namespace EditDistance.Passjoin
                         Console.Write(count[lvl] + "\t");
                     Console.WriteLine();
                 }*/
+        static public void test(ArrayList words, int th, int epslion)
+        {
+            long[] count = new long[epslion + 1];
+
+            words.Sort(new StringComparer());
+
+            string[] xsss = parition((string)words[143896], 3, 4);
+
+            int progress = (int)Math.Ceiling(words.Count / 100.0);
+            //StreamWriter sw = new StreamWriter("c:\\data\\out_"+th+"_"+epslion+".txt", true);
+            //sw.WriteLine("count:" + words.Count + "\tth:" + th + "\te" + epslion);
+            for (int indx = (int)(0); indx < words.Count; indx++)
+            {
+                if (indx % progress == 0)
+                {
+                    Console.Write(".");
+                }
+
                 for (int i = 0; i < epslion + 1; i++)
                     count[i] = 0;
                 HashSet<string> ss = new HashSet<string>();
-                ss.Add("whyalla");
+                //ss.Add("whyalla");
+                //ss.Add("amassing");
+                ss.Add("inarticulateness_s");
                 string s = (string)words[indx];
 
-                HashSet<int>[] matches = new HashSet<int>[epslion];
-                for (int i = 0; i < epslion; i++) matches[i] = new HashSet<int>();
+                HashSet<int>[] matches = new HashSet<int>[epslion + 1];
+                for (int i = 0; i < epslion + 1; i++) matches[i] = new HashSet<int>();
                 #region matches
-                if (ss.Contains(s))
+                //if (ss.Contains(s))
                 {
                     for (int l = s.Length - th; l <= s.Length; l++)
                     {
+                        //sw.WriteLine("length  " + l);
                         for (int i = 0; i < th + epslion; i++)
                         {
-                            invertedList L = GetList(i, l);
+                            invertedList L = GetList(invertedlists, i, l);
                             if (L == null) continue;
                             if (L.length == 0) continue;
                             int pi = L.start;
                             int delta = s.Length - l;
-                            //iterate throw
-                            int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th - i));
-                            lowerbound = (int)Math.Max(0, lowerbound);
-                            int upperbound = (int)Math.Min(pi + (i + 1 - 1), pi + delta + (th - i));
-                            upperbound = (int)Math.Min(s.Length - L.length, upperbound);
 
+                            //iterate throw
+                            /*  int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th+epslion - i-1));
+                              lowerbound = (int)Math.Max(0, lowerbound);
+                              int upperbound = (int)Math.Min(pi + (i + 1 - 1), pi + delta + (th+epslion - i-1));
+                              upperbound = (int)Math.Min(s.Length - L.length, upperbound);*/
+
+                            int lowerbound = pi - (int)((th - delta) / 2);
+                            int upperbound = pi + (int)((th + delta) / 2);
+
+                            lowerbound = (int)Math.Max(0, lowerbound);
+                            upperbound = (int)Math.Min(s.Length - L.length, upperbound);
+                            //sw.WriteLine("i:"+i+ "["+lowerbound+","+upperbound+"]");
                             for (int k = lowerbound; k <= upperbound; k++)
                             {
                                 string tmp = s.Substring(k, L.length);
                                 if (L.ht.ContainsKey(tmp))
                                 {
                                     List<int> il = (List<int>)L.ht[tmp];
-
+                                    //sw.Write(k + " " +tmp+" "+ il.Count+"(");
+                                    /*foreach (int x in il)
+                                    {
+                                        sw.Write(x + ",");
+                                    }*/
+                                    //sw.WriteLine("");
                                     foreach (int x in il)
                                     {
                                         int level = 0;
@@ -278,20 +298,21 @@ namespace EditDistance.Passjoin
                                         }
                                     }
                                 }
+                                //  else sw.WriteLine(k + " " +tmp+" "+ "N/A");
                             } //
-
                         }
                     }
                 }
                 #endregion
-                for (int lvl = 0; lvl < epslion; lvl++)
-                    count[lvl] += matches[lvl].Count;
 
                 foreach (int p in matches[epslion - 1])
                 {
-                    if (Lev.editdistance((string)words[indx], (string)words[p], th) <= th)
-                        count[epslion]++;
+                    //if (Lev.editdistance((string)words[indx], (string)words[p], th) <= th){
+                    matches[epslion].Add(p);
+                    //}
                 }
+                for (int lvl = 0; lvl < epslion + 1; lvl++)
+                    count[lvl] = matches[lvl].Count;
 
                 #region parition
                 //parition s into strings
@@ -302,7 +323,7 @@ namespace EditDistance.Passjoin
                 foreach (string p in ps)
                 {
                     //get the invert list if exists; otherwise creates a new one
-                    invertedList L = getList(m, s.Length);
+                    invertedList L = getList(invertedlists, m, s.Length);
                     L.add(p, indx);
                     if (p != null)
                     {
@@ -314,17 +335,232 @@ namespace EditDistance.Passjoin
                 }
                 #endregion
                 //save results
-                if (ss.Contains(s))
+                //if (ss.Contains(s))
                 {
-                    sw.Write(indx + "\t" + words[indx] + "\t");
-                    for (int i = 0; i < epslion + 1; i++)
+                    //sw.Write(indx + "\t" + words[indx] + "\t");
+                    //for (int i = 0; i < epslion + 1; i++)
+                    //{
+                    //  sw.Write(count[i] + "\t");
+                    //}
+                    //sw.WriteLine();
+                    /*
+                    HashSet<int> hs=matches[epslion];
+                    foreach (int j in hs)
                     {
-                        sw.Write(count[i] + "\t");
+                        
+                            sw.Write(words[j]+"("+j+")\t");
                     }
-                    sw.WriteLine();
+                    sw.WriteLine();*/
                 }
             }
-            sw.Close();
+            //sw.Close();
+            invertedlists = new Hashtable();
+        }
+
+
+        static public void ComputeMultiMatch(ArrayList words, int th, int epslion)
+        {
+            long[] count = new long[epslion + 1];
+
+            words.Sort(new StringComparer());
+
+            int progress = (int)Math.Ceiling(words.Count / 100.0);
+            for (int indx = (int)(0); indx < words.Count; indx++)
+            {
+                if (indx % progress == 0)
+                {
+                    Console.Write(".");
+                }
+
+                string s = (string)words[indx];
+
+                HashSet<int>[] matches = new HashSet<int>[epslion + 1];
+                for (int i = 0; i < epslion + 1; i++) matches[i] = new HashSet<int>();
+                #region matches
+                for (int l = s.Length - th; l <= s.Length; l++)
+                {
+                    for (int i = 0; i < th + epslion; i++)
+                    {
+                        invertedList L = GetList(invertedlists, i, l);
+                        if (L == null) continue;
+                        if (L.length == 0) continue;
+                        int pi = L.start;
+                        int delta = s.Length - l;
+
+                        //iterate throw
+                        /*  int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th+epslion - i-1));
+                          int upperbound = (int)Math.Min(pi + (i + 1 - 1), pi + delta + (th+epslion - i-1));*/
+
+                        int lowerbound = pi - (int)((th - delta) / 2);
+                        int upperbound = pi + (int)((th + delta) / 2);
+
+                        lowerbound = (int)Math.Max(0, lowerbound);
+                        upperbound = (int)Math.Min(s.Length - L.length, upperbound);
+
+                        for (int k = lowerbound; k <= upperbound; k++)
+                        {
+                            string tmp = s.Substring(k, L.length);
+                            if (L.ht.ContainsKey(tmp))
+                            {
+                                List<int> il = (List<int>)L.ht[tmp];
+                                foreach (int x in il)
+                                {
+                                    int level = 0;
+                                    while (!matches[level].Add(x))
+                                    {
+                                        level++;
+                                        if (level >= epslion) break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #endregion
+
+                foreach (int p in matches[epslion - 1])
+                {
+                    //if (Lev.editdistance((string)words[indx], (string)words[p], th) <= th){
+                    matches[epslion].Add(p);
+                    //}
+                }
+                for (int lvl = 0; lvl < epslion + 1; lvl++)
+                    count[lvl] += matches[lvl].Count;
+
+                #region parition
+                //parition s into strings
+                string[] ps = parition(s, th, epslion);
+                //adding parition to the index
+                int m = 0;
+                int start = 0;
+                foreach (string p in ps)
+                {
+                    //get the invert list if exists; otherwise creates a new one
+                    invertedList L = getList(invertedlists, m, s.Length);
+                    L.add(p, indx);
+                    if (p != null)
+                    {
+                        L.length = p.Length;
+                        L.start = start;
+                        start = start + p.Length;
+                    }
+                    m++;
+                }
+                #endregion
+            }
+            invertedlists = new Hashtable();
+        }
+        static public void AddPart(Hashtable ht, string s, int indx, string[] ps)
+        {
+            int m = 0;
+            int start = 0;
+            foreach (string p in ps)
+            {
+                //get the invert list if exists; otherwise creates a new one
+                invertedList L = getList(ht, m, s.Length);
+                L.add(p, indx);
+                if (p != null)
+                {
+                    L.length = p.Length;
+                    L.start = start;
+                    start = start + p.Length;
+                }
+                m++;
+            }
+
+        }
+
+        static public HashSet<int>[] getMatches(int epslion, int th, string s, Hashtable ht, HashSet<int> pmatches)
+        {
+            HashSet<int>[] matches = new HashSet<int>[epslion + 1];
+            for (int i = 0; i < epslion + 1; i++) matches[i] = new HashSet<int>();
+        
+            for (int l = s.Length - th; l <= s.Length; l++)
+            {
+                for (int i = 0; i < th + epslion; i++)
+                {
+                    invertedList L = GetList(ht, i, l);
+                    if (L == null) continue;
+                    if (L.length == 0) continue;
+                    int pi = L.start;
+                    int delta = s.Length - l;
+
+                    //iterate throw
+                    /*  int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th+epslion - i-1));
+                      int upperbound = (int)Math.Min(pi + (i + 1 - 1), pi + delta + (th+epslion - i-1));*/
+
+                    int lowerbound = pi - (int)((th - delta) / 2);
+                    int upperbound = pi + (int)((th + delta) / 2);
+
+                    lowerbound = (int)Math.Max(0, lowerbound);
+                    upperbound = (int)Math.Min(s.Length - L.length, upperbound);
+
+                    for (int k = lowerbound; k <= upperbound; k++)
+                    {
+                        string tmp = s.Substring(k, L.length);
+                        if (L.ht.ContainsKey(tmp))
+                        {
+                            List<int> il = (List<int>)L.ht[tmp];
+                            foreach (int x in il)
+                            {
+                                if (pmatches!=null && !pmatches.Contains(x)) continue;
+                                int level = 0;
+
+                                while (!matches[level].Add(x))
+                                {
+                                    level++;
+                                    if (level >= epslion) break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return matches;
+
+        }
+        static public void ComputeNewMatch(ArrayList words, int th, int epslion)
+        {
+            long[] count = new long[epslion + 1];
+
+            words.Sort(new StringComparer());
+
+            int progress = (int)Math.Ceiling(words.Count / 100.0);
+            for (int indx = (int)(0); indx < words.Count; indx++)
+            {
+                if (indx % progress == 0)
+                {
+                    Console.Write(".");
+                }
+
+                string s = (string)words[indx];
+
+                HashSet<int>[] m = getMatches(1, th, s, invlists, null);
+                HashSet<int>[] matches = getMatches(epslion, th, s, invertedlists, m[0]);
+
+                foreach (int p in matches[epslion - 1])
+                {
+                    //if (Lev.editdistance((string)words[indx], (string)words[p], th) <= th){
+                    matches[epslion].Add(p);
+                    //}
+                }
+                for (int lvl = 0; lvl < epslion + 1; lvl++)
+                    count[lvl] += matches[lvl].Count;
+
+                #region parition
+                //parition s into strings
+                string[] ps = parition(s, th, epslion);
+                //adding parition to the index
+                AddPart(invertedlists, s, indx, ps);
+                string[] ps1 = parition(s, th, epslion);
+                //adding parition to the index
+                AddPart(invlists, s, indx, ps1);
+                #endregion
+            }
+            invertedlists = new Hashtable();
+            invlists = new Hashtable();
         }
     }
 }

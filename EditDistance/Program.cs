@@ -28,25 +28,27 @@ namespace EditDistance
         static void Main(string[] args)
         {
             string[] filename = new string[10];
-            string dir=@"C:\Users\khalefa\SkyDrive\Alex Work\Work\Edit Distance\datasets\";
-            filename[0] = dir+"word.format";
-            filename[1] = dir+"dblpall.format";
+            string dir = @"C:\Users\khalefa\SkyDrive\Alex Work\Work\Edit Distance\datasets\";
+            filename[0] = dir + "word.format";
+            filename[1] = dir + "dblpall.format";
             filename[2] = @"c:\data\tiny.txt";
             filename[3] = @"c:\data\words.txt";
             filename[4] = dir + "word.format.1000";
             filename[5] = @"c:\data\paper.txt";
             int indx = 0;
             ArrayList words = readinput(filename[indx]);
-            //get number of grams
-          /*  DateTime t1 = DateTime.Now;
-            Grams.Gram.GetGrams(words, 2);
-            TimeSpan ts1 = DateTime.Now - t1;
-            Console.Write(ts1);
-            */
+          /*  //get number of grams
+              DateTime t1 = DateTime.Now;
+              Grams.Gram.GetGrams(words, 3);
+              TimeSpan ts1 = DateTime.Now - t1;
+              Console.Write(ts1);
+              */
+           // PairWise.compute(words, 3);
+            
             for (int e = 1; e < 8; e++)
             {
                 DateTime t = DateTime.Now;
-                passjoinII.ComputeMultiMatch(words, 3, e);
+                passjoinII.ComputeNewMatch(words, 3, e);
                 //passjoinII.ComputeMultiMatch_old (words, 3);
                 TimeSpan ts = DateTime.Now - t;
                 Console.Write(ts);
