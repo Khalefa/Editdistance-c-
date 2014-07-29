@@ -48,7 +48,7 @@ namespace EditDistance
             for (int e = 1; e < 8; e++)
             {
                 DateTime t = DateTime.Now;
-                passjoinII.ComputeNewMatch(words, 3, e);
+                passjoinIII.ComputeMatch(words, 3);
                 //passjoinII.ComputeMultiMatch_old (words, 3);
                 TimeSpan ts = DateTime.Now - t;
                 Console.Write(ts);
