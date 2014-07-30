@@ -24,16 +24,24 @@ namespace EditDistance
             r.Close();
             return new ArrayList(words.ToArray<string>());
         }
-        static void run(string dataset,int th, int eps,ArrayList words){
+        static void run(string alg, string dataset, int th, int eps, ArrayList words)
+        {
             Global.dataset = dataset;
             Global.threshold = th;
-            
+
             Global.epslion = eps;
             DateTime t = DateTime.Now;
-            PairLong p= passjoinIII.ComputeMatch(words, th,eps);
+            PairLong p;
+            if (alg == "PJ")
+                p = passjoinIII.ComputeMatch(words, th, eps);
+            else
+                if (alg == "MPJ")
+                    p = passjoinIII.ComputeMyMatch(words, th, eps);
+                else
+                    p = new PairLong();
             Global.resut = p.first;
             Global.count = p.second;
-            //passjoinII.ComputeMultiMatch_old (words, 3);
+
             TimeSpan ts = DateTime.Now - t;
             Global.time = ts;
             Console.Write(Global.print());
@@ -49,32 +57,40 @@ namespace EditDistance
             filename[4] = dir + "word.format.1000";
             filename[5] = @"c:\data\paper.txt";
             int indx = 0;
-            Global.exact = false;
+            Global.exact = true;
+
             ArrayList words = readinput(filename[indx]);
             StreamWriter sw;
-            if (Directory.Exists(dir + "r"))
+            if (File.Exists(dir + "r.txt"))
             {
-                sw = new StreamWriter(dir + "r", true);
+                sw = new StreamWriter(dir + "r.txt", true);
             }
             else
             {
-                sw = new StreamWriter(dir + "r");
+                sw = new StreamWriter(dir + "r.txt");
                 sw.WriteLine(Global.header());
             }
-            for (int e = 1; e < 9; e=e*2)
+            for (int e = 1; e < 9; e = e * 2)
             {
-                run(filename[indx], 3, e, words);
+                run("PJ", filename[indx], 3, e, words);
                 sw.WriteLine(Global.print());
             }
+
+            for (int e = 1; e < 9; e = e * 2)
+            {
+                run("MPJ", filename[indx], 3, e, words);
+                sw.WriteLine(Global.print());
+            }
+
             sw.Close();
-                /*  //get number of grams
-              DateTime t1 = DateTime.Now;
-              Grams.Gram.GetGrams(words, 3);
-              TimeSpan ts1 = DateTime.Now - t1;
-              Console.Write(ts1);
-              */
-           // PairWise.compute(words, 3);
-          
+            /*  //get number of grams
+          DateTime t1 = DateTime.Now;
+          Grams.Gram.GetGrams(words, 3);
+          TimeSpan ts1 = DateTime.Now - t1;
+          Console.Write(ts1);
+          */
+            // PairWise.compute(words, 3);
+
             //Radix.engine.run(words);
             //ArrayList m= passjoin.getlengths(9, 6);
             //passjoin.parition("sad", 1);

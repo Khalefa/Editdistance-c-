@@ -19,13 +19,18 @@ namespace EditDistance.Passjoin
             first = f;
             second = s;
         }
+
+        public PairLong()
+        {
+            // TODO: Complete member initialization
+        }
     }
 
     //we use array instead of hashset for 
     public class passjoinIII
     {
         [DebuggerDisplay("'{l}' '{i}'")]
-         class pair
+        class pair
         {
             public int l;
             public int i;
@@ -165,10 +170,8 @@ namespace EditDistance.Passjoin
 
         }
 
-        static public List<int> getMatches(int epslion, int th, string s, Hashtable ht, int j,int[] matches, int[] indx)
+        static public List<int> getMatches(int epslion, int th, string s, Hashtable ht, int j, int[] matches, int[] indx)
         {
-            //int[] matches = new HashSet<int>[epslion + 1];
-            //for (int i = 0; i < epslion + 1; i++) matches[i] = new HashSet<int>();
             List<int> m = new List<int>();
 
             for (int l = s.Length - th; l <= s.Length; l++)
@@ -210,7 +213,6 @@ namespace EditDistance.Passjoin
                                     matches[x] = 1;
                                     if (matches[x] == epslion) m.Add(x);
                                 }
-                                
                             }
                         }
                     }
@@ -219,13 +221,100 @@ namespace EditDistance.Passjoin
             return m;
         }
 
-        static public PairLong ComputeMatch(ArrayList words, int th, int eps=1)
+        static public void getMatches_noreturn(int th, string s, Hashtable ht, int j, int[] matches, int[] indx)
         {
-            long rcnt=0;
-            long candidta_cnt=0;
+            int epslion = 1;
+            for (int l = s.Length - th; l <= s.Length; l++)
+            {
+                for (int i = 0; i < th + epslion; i++)
+                {
+                    invertedList L = GetList(ht, i, l);
+                    if (L == null) continue;
+                    if (L.length == 0) continue;
+                    int pi = L.start;
+                    int delta = s.Length - l;
+
+                    //iterate throw
+                    /*  int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th+epslion - i-1));
+                      int upperbound = (int)Math.Min(pi + (i + 1 - 1), pi + delta + (th+epslion - i-1));*/
+
+                    int lowerbound = pi - (int)((th - delta) / 2);
+                    int upperbound = pi + (int)((th + delta) / 2);
+
+                    lowerbound = (int)Math.Max(0, lowerbound);
+                    upperbound = (int)Math.Min(s.Length - L.length, upperbound);
+
+                    for (int k = lowerbound; k <= upperbound; k++)
+                    {
+                        string tmp = s.Substring(k, L.length);
+                        if (L.ht.ContainsKey(tmp))
+                        {
+                            List<int> il = (List<int>)L.ht[tmp];
+                            foreach (int x in il)
+                            {
+
+                                indx[x] = j;
+                                matches[x] = 1;
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        static public List<int> getMatches_withmemo(int epslion, int th, string s, Hashtable ht, int j, int[] matches, int[] indx)
+        {
+            List<int> m = new List<int>();
+            for (int l = s.Length - th; l <= s.Length; l++)
+            {
+                for (int i = 0; i < th + epslion; i++)
+                {
+                    invertedList L = GetList(ht, i, l);
+                    if (L == null) continue;
+                    if (L.length == 0) continue;
+                    int pi = L.start;
+                    int delta = s.Length - l;
+
+                    //iterate throw
+                    /*  int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th+epslion - i-1));
+                      int upperbound = (int)Math.Min(pi + (i + 1 - 1), pi + delta + (th+epslion - i-1));*/
+
+                    int lowerbound = pi - (int)((th - delta) / 2);
+                    int upperbound = pi + (int)((th + delta) / 2);
+
+                    lowerbound = (int)Math.Max(0, lowerbound);
+                    upperbound = (int)Math.Min(s.Length - L.length, upperbound);
+
+                    for (int k = lowerbound; k <= upperbound; k++)
+                    {
+                        string tmp = s.Substring(k, L.length);
+                        if (L.ht.ContainsKey(tmp))
+                        {
+                            List<int> il = (List<int>)L.ht[tmp];
+                            foreach (int x in il)
+                            {
+                                if (indx[x] == j)
+                                {
+                                    matches[x]++;
+                                    if (matches[x] == epslion) m.Add(x);
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+            return m;
+        }
+
+        static public PairLong ComputeMatch(ArrayList words, int th, int eps = 1)
+        {
+            Global.alg = "passjoin1";
+            long rcnt = 0;
+            long candidta_cnt = 0;
             int[] matches_arr = new int[words.Count];
             int[] indx = new int[words.Count];
-                
+
             words.Sort(new StringComparer());
 
             int progress = (int)Math.Ceiling(words.Count / 100.0);
@@ -237,10 +326,10 @@ namespace EditDistance.Passjoin
                 }
 
                 string s = (string)words[j];
-                List<int> l=getMatches(1, th, s, invlists, j,matches_arr,indx);
+                List<int> l = getMatches(eps, th, s, invlists, j, matches_arr, indx);
                 candidta_cnt += l.Count;
                 if (Global.exact)
-                {                 
+                {
                     foreach (int p in l)
                     {
                         if (Lev.editdistance((string)words[j], (string)words[p], th) <= th)
@@ -249,18 +338,6 @@ namespace EditDistance.Passjoin
                         }
                     }
                 }
-                /* for (long p = 0; p < matches_arr.LongLength; p++)
-                 {
-                     //if (Lev.editdistance((string)words[indx], (string)words[p], th) <= th){
-                     matches_arr[p]++;
-                     //}
-                 }
-                 for (long p = 0; p < matches_arr.LongLength; p++)
-                 {
-                  int lvl= matches_arr[p];
-                  count[lvl]++;
-                 }*/
-                
                 #region parition
                 string[] ps1 = parition(s, th, eps);
                 //adding parition to the index
@@ -271,6 +348,61 @@ namespace EditDistance.Passjoin
             invlists = new Hashtable();
             return new PairLong(rcnt, candidta_cnt);
         }
-    
+        static public PairLong ComputeMyMatch(ArrayList words, int th, int eps = 1)
+        {
+            Global.alg = "my passjoin";
+            long rcnt = 0;
+            long candidta_cnt = 0;
+            int[] matches_arr = new int[words.Count];
+            int[] indx = new int[words.Count];
+            invlists = new Hashtable();
+            invertedlists = new Hashtable();
+            words.Sort(new StringComparer());
+
+            int progress = (int)Math.Ceiling(words.Count / 100.0);
+            for (int j = (int)(0); j < words.Count; j++)
+            {
+                if (j % progress == 0)
+                {
+                    Console.Write(".");
+                }
+
+                string s = (string)words[j];
+                getMatches_noreturn(th, s, invlists, j, matches_arr, indx);
+                List<int> l = getMatches_withmemo(eps, th, s, invertedlists, j, matches_arr, indx);
+                candidta_cnt += l.Count;
+                if (Global.exact)
+                {
+                    foreach (int p in l)
+                    {
+                        if (Lev.editdistance((string)words[j], (string)words[p], th) <= th)
+                        {
+                            rcnt++;
+                        }
+                    }
+                }
+                #region parition
+                string[] ps1 = parition(s, th, 1);
+                AddPart(invlists, s, j, ps1);
+                string[] ps = parition(s, th, eps);
+                AddPart(invertedlists, s, j, ps);
+
+                #endregion
+            }
+
+            return new PairLong(rcnt, candidta_cnt);
+        }
+
+        /* for (long p = 0; p < matches_arr.LongLength; p++)
+         {
+             //if (Lev.editdistance((string)words[indx], (string)words[p], th) <= th){
+             matches_arr[p]++;
+             //}
+         }
+         for (long p = 0; p < matches_arr.LongLength; p++)
+         {
+          int lvl= matches_arr[p];
+          count[lvl]++;
+         }*/
     }
 }
