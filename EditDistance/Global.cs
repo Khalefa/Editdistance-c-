@@ -9,5 +9,21 @@ namespace EditDistance
     public  class Global
     {
         public static TimeSpan time;
+        public static string alg;
+        public static int threshold;
+        public static int epslion;
+        public static long resut;
+        public static long count;
+        public static bool exact;
+        public static string dataset;
+
+        public static string header()
+        {
+            return "dataset\talg\tth\teps\texact\tcount\tresult\ttime";
+        }
+        public static string print()
+        {
+            return dataset+'\t'+alg + '\t' + threshold + '\t' + epslion + '\t' + exact + '\t' + count +'\t'+resut +'\t' + time;
+        }
     }
 }

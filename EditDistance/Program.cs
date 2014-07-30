@@ -24,7 +24,20 @@ namespace EditDistance
             r.Close();
             return new ArrayList(words.ToArray<string>());
         }
-
+        static void run(string dataset,int th, int eps,ArrayList words){
+            Global.dataset = dataset;
+            Global.threshold = th;
+            
+            Global.epslion = eps;
+            DateTime t = DateTime.Now;
+            PairLong p= passjoinIII.ComputeMatch(words, th,eps);
+            Global.resut = p.first;
+            Global.count = p.second;
+            //passjoinII.ComputeMultiMatch_old (words, 3);
+            TimeSpan ts = DateTime.Now - t;
+            Global.time = ts;
+            Console.Write(Global.print());
+        }
         static void Main(string[] args)
         {
             string[] filename = new string[10];
@@ -36,23 +49,32 @@ namespace EditDistance
             filename[4] = dir + "word.format.1000";
             filename[5] = @"c:\data\paper.txt";
             int indx = 0;
+            Global.exact = false;
             ArrayList words = readinput(filename[indx]);
-          /*  //get number of grams
+            StreamWriter sw;
+            if (Directory.Exists(dir + "r"))
+            {
+                sw = new StreamWriter(dir + "r", true);
+            }
+            else
+            {
+                sw = new StreamWriter(dir + "r");
+                sw.WriteLine(Global.header());
+            }
+            for (int e = 1; e < 9; e=e*2)
+            {
+                run(filename[indx], 3, e, words);
+                sw.WriteLine(Global.print());
+            }
+            sw.Close();
+                /*  //get number of grams
               DateTime t1 = DateTime.Now;
               Grams.Gram.GetGrams(words, 3);
               TimeSpan ts1 = DateTime.Now - t1;
               Console.Write(ts1);
               */
            // PairWise.compute(words, 3);
-            
-            for (int e = 1; e < 8; e++)
-            {
-                DateTime t = DateTime.Now;
-                passjoinIII.ComputeMatch(words, 3);
-                //passjoinII.ComputeMultiMatch_old (words, 3);
-                TimeSpan ts = DateTime.Now - t;
-                Console.Write(ts);
-            }
+          
             //Radix.engine.run(words);
             //ArrayList m= passjoin.getlengths(9, 6);
             //passjoin.parition("sad", 1);

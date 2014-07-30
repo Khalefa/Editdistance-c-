@@ -9,11 +9,23 @@ using Verification;
 using System.IO;
 namespace EditDistance.Passjoin
 {
+
+    public class PairLong
+    {
+        public long first;
+        public long second;
+        public PairLong(long f, long s)
+        {
+            first = f;
+            second = s;
+        }
+    }
+
     //we use array instead of hashset for 
     public class passjoinIII
     {
         [DebuggerDisplay("'{l}' '{i}'")]
-        class pair
+         class pair
         {
             public int l;
             public int i;
@@ -207,9 +219,10 @@ namespace EditDistance.Passjoin
             return m;
         }
 
-        static public void ComputeMatch(ArrayList words, int th)
+        static public PairLong ComputeMatch(ArrayList words, int th, int eps=1)
         {
-            long[] count = new long[1 + 1];
+            long rcnt=0;
+            long candidta_cnt=0;
             int[] matches_arr = new int[words.Count];
             int[] indx = new int[words.Count];
                 
@@ -225,9 +238,16 @@ namespace EditDistance.Passjoin
 
                 string s = (string)words[j];
                 List<int> l=getMatches(1, th, s, invlists, j,matches_arr,indx);
-
-                foreach (int pp in l)
-                {
+                candidta_cnt += l.Count;
+                if (Global.exact)
+                {                 
+                    foreach (int p in l)
+                    {
+                        if (Lev.editdistance((string)words[j], (string)words[p], th) <= th)
+                        {
+                            rcnt++;
+                        }
+                    }
                 }
                 /* for (long p = 0; p < matches_arr.LongLength; p++)
                  {
@@ -240,53 +260,17 @@ namespace EditDistance.Passjoin
                   int lvl= matches_arr[p];
                   count[lvl]++;
                  }*/
-                #region parition
-                string[] ps1 = parition(s, th, 1);
-                //adding parition to the index
-                AddPart(invlists, s, j, ps1);
-                #endregion
-            }
-
-            invlists = new Hashtable();
-        }
-        static public void ComputeMatch(ArrayList words, int th, int eps)
-        {
-            long[] count = new long[eps + 1];
-            int[] matches_arr = new int[words.Count];
-            int[] indx = new int[words.Count];
-
-            words.Sort(new StringComparer());
-
-            int progress = (int)Math.Ceiling(words.Count / 100.0);
-            for (int j = (int)(0); j < words.Count; j++)
-            {
-                if (j % progress == 0)
-                {
-                    Console.Write(".");
-                }
-
-                string s = (string)words[j];
-                getMatches(1, th, s, invlists, j, matches_arr, indx);
                 
-                /* for (long p = 0; p < matches_arr.LongLength; p++)
-                 {
-                     //if (Lev.editdistance((string)words[indx], (string)words[p], th) <= th){
-                     matches_arr[p]++;
-                     //}
-                 }
-                 for (long p = 0; p < matches_arr.LongLength; p++)
-                 {
-                  int lvl= matches_arr[p];
-                  count[lvl]++;
-                 }*/
                 #region parition
-                string[] ps1 = parition(s, th, 1);
+                string[] ps1 = parition(s, th, eps);
                 //adding parition to the index
                 AddPart(invlists, s, j, ps1);
                 #endregion
             }
 
             invlists = new Hashtable();
+            return new PairLong(rcnt, candidta_cnt);
         }
+    
     }
 }
