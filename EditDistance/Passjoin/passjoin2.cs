@@ -360,6 +360,7 @@ namespace EditDistance.Passjoin
 
         static public void ComputeMultiMatch(ArrayList words, int th, int epslion)
         {
+            Global.alg = "P2J";
             long[] count = new long[epslion + 1];
 
             words.Sort(new StringComparer());

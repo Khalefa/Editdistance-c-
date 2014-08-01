@@ -226,13 +226,13 @@ namespace EditDistance.Passjoin
             int epslion = 1;
             for (int l = s.Length - th; l <= s.Length; l++)
             {
+                int delta = s.Length - l;
                 for (int i = 0; i < th + epslion; i++)
                 {
                     invertedList L = GetList(ht, i, l);
                     if (L == null) continue;
                     if (L.length == 0) continue;
-                    int pi = L.start;
-                    int delta = s.Length - l;
+                    int pi = L.start;                    
 
                     //iterate throw
                     /*  int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th+epslion - i-1));
@@ -252,10 +252,8 @@ namespace EditDistance.Passjoin
                             List<int> il = (List<int>)L.ht[tmp];
                             foreach (int x in il)
                             {
-
                                 indx[x] = j;
-                                matches[x] = 1;
-
+                                matches[x] = 0;
                             }
                         }
                     }
@@ -309,39 +307,62 @@ namespace EditDistance.Passjoin
 
         static public PairLong ComputeMatch(ArrayList words, int th, int eps = 1)
         {
-            Global.alg = "passjoin1";
+            Global.alg = "P3J";
             long rcnt = 0;
             long candidta_cnt = 0;
             int[] matches_arr = new int[words.Count];
             int[] indx = new int[words.Count];
-
+           
             words.Sort(new StringComparer());
 
             int progress = (int)Math.Ceiling(words.Count / 100.0);
             for (int j = (int)(0); j < words.Count; j++)
             {
+                int e = eps;
                 if (j % progress == 0)
                 {
                     Console.Write(".");
                 }
 
                 string s = (string)words[j];
-                List<int> l = getMatches(eps, th, s, invlists, j, matches_arr, indx);
+                string ss = s;
+                //two cases: if s is shorter than threshold
+                if (s.Length >= th + eps)
+                {
+                    //this is ok
+                    ss = s;
+                }
+                else if (s.Length < th + 1)
+                {
+                    //append the difference
+                    ss="";
+                    for(int i=0;i<th+1-s.Length;i++)
+                        ss=ss+' ';
+                    ss=s+ss;
+                    e = 1;
+                }
+                else
+                {
+                    //reduce eps to  work fine
+                    e = (s.Length)-th;
+                }
+                
+                List<int> l = getMatches(e, th, ss, invlists, j, matches_arr, indx);
                 candidta_cnt += l.Count;
                 if (Global.exact)
                 {
                     foreach (int p in l)
                     {
-                        if (Lev.editdistance((string)words[j], (string)words[p], th) <= th)
+                        if (Lev.editdistance(s, (string)words[p], th) <= th)
                         {
                             rcnt++;
                         }
                     }
                 }
                 #region parition
-                string[] ps1 = parition(s, th, eps);
+                string[] ps1 = parition(ss, th, e);
                 //adding parition to the index
-                AddPart(invlists, s, j, ps1);
+                AddPart(invlists, ss, j, ps1);
                 #endregion
             }
 
@@ -350,7 +371,7 @@ namespace EditDistance.Passjoin
         }
         static public PairLong ComputeMyMatch(ArrayList words, int th, int eps = 1)
         {
-            Global.alg = "my passjoin";
+            Global.alg = "MPJ";
             long rcnt = 0;
             long candidta_cnt = 0;
             int[] matches_arr = new int[words.Count];
@@ -362,30 +383,53 @@ namespace EditDistance.Passjoin
             int progress = (int)Math.Ceiling(words.Count / 100.0);
             for (int j = (int)(0); j < words.Count; j++)
             {
+                int e = eps;
                 if (j % progress == 0)
                 {
                     Console.Write(".");
                 }
 
                 string s = (string)words[j];
-                getMatches_noreturn(th, s, invlists, j, matches_arr, indx);
-                List<int> l = getMatches_withmemo(eps, th, s, invertedlists, j, matches_arr, indx);
+                string ss = s;
+                //two cases: if s is shorter than threshold
+                if (s.Length >= th + eps)
+                {
+                    //this is ok
+                    ss = s;
+                }
+                else if (s.Length < th + 1)
+                {
+                    //append the difference
+                    ss = "";
+                    for (int i = 0; i < th + 1 - s.Length; i++)
+                        ss = ss + ' ';
+                    ss = s + ss;
+                    e = 1;
+                }
+                else
+                {
+                    //reduce eps to  work fine
+                    e = (s.Length) - th;
+                }
+             
+                getMatches_noreturn(th, ss, invlists, j, matches_arr, indx);
+                List<int> l = getMatches_withmemo(e, th, ss, invertedlists, j, matches_arr, indx);
                 candidta_cnt += l.Count;
                 if (Global.exact)
                 {
                     foreach (int p in l)
                     {
-                        if (Lev.editdistance((string)words[j], (string)words[p], th) <= th)
+                        if (Lev.editdistance(s, (string)words[p], th) <= th)
                         {
                             rcnt++;
                         }
                     }
                 }
                 #region parition
-                string[] ps1 = parition(s, th, 1);
-                AddPart(invlists, s, j, ps1);
-                string[] ps = parition(s, th, eps);
-                AddPart(invertedlists, s, j, ps);
+                string[] ps1 = parition(ss, th, 1);
+                AddPart(invlists, ss, j, ps1);
+                string[] ps = parition(ss, th, e);
+                AddPart(invertedlists, ss, j, ps);
 
                 #endregion
             }

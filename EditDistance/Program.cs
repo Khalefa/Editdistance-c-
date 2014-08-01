@@ -31,14 +31,18 @@ namespace EditDistance
 
             Global.epslion = eps;
             DateTime t = DateTime.Now;
-            PairLong p;
-            if (alg == "PJ")
+            PairLong p = new PairLong(); ;
+
+            if (alg == "P3J")
                 p = passjoinIII.ComputeMatch(words, th, eps);
             else
+              if (alg == "P2J")
+                 passjoinII.ComputeMultiMatch(words, th, eps);
+            else
                 if (alg == "MPJ")
-                    p = passjoinIII.ComputeMyMatch(words, th, eps);
-                else
-                    p = new PairLong();
+                   p = passjoinIII.ComputeMyMatch(words, th, eps);
+
+
             Global.resut = p.first;
             Global.count = p.second;
 
@@ -64,23 +68,29 @@ namespace EditDistance
             if (File.Exists(dir + "r.txt"))
             {
                 sw = new StreamWriter(dir + "r.txt", true);
+                sw.WriteLine("--------------------------------------------");
             }
             else
             {
                 sw = new StreamWriter(dir + "r.txt");
                 sw.WriteLine(Global.header());
             }
-            for (int e = 1; e < 9; e = e * 2)
+            sw.AutoFlush = true;
+            for (int e = 8; e > 1; e = e / 2)
             {
-                run("PJ", filename[indx], 3, e, words);
+                run("P2J", filename[indx], 3, e, words);
+                sw.WriteLine(Global.print());
+                run("P3J", filename[indx], 3, e, words);
+                sw.WriteLine(Global.print());
+                run("P2J", filename[indx], 3, e, words);
                 sw.WriteLine(Global.print());
             }
+            /*  for (int e = 1; e < 9; e = e * 2)
+              {
+                  run("PJ", filename[indx], 3, e, words);
+                  sw.WriteLine(Global.print());
+              }*/
 
-            for (int e = 1; e < 9; e = e * 2)
-            {
-                run("MPJ", filename[indx], 3, e, words);
-                sw.WriteLine(Global.print());
-            }
 
             sw.Close();
             /*  //get number of grams
