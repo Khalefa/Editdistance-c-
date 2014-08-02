@@ -76,13 +76,13 @@ namespace EditDistance
                 sw.WriteLine(Global.header());
             }
             sw.AutoFlush = true;
-            for (int e = 8; e > 1; e = e / 2)
+            for (int e =   16; e >= 1; e = e / 2)
             {
                 run("P2J", filename[indx], 3, e, words);
                 sw.WriteLine(Global.print());
                 run("P3J", filename[indx], 3, e, words);
                 sw.WriteLine(Global.print());
-                run("P2J", filename[indx], 3, e, words);
+                run("MPJ", filename[indx], 3, e, words);
                 sw.WriteLine(Global.print());
             }
             /*  for (int e = 1; e < 9; e = e * 2)

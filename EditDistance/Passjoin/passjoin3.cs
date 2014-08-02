@@ -262,6 +262,7 @@ namespace EditDistance.Passjoin
         }
         static public List<int> getMatches_withmemo(int epslion, int th, string s, Hashtable ht, int j, int[] matches, int[] indx)
         {
+            long saved = 0;
             List<int> m = new List<int>();
             for (int l = s.Length - th; l <= s.Length; l++)
             {
@@ -295,6 +296,10 @@ namespace EditDistance.Passjoin
                                 {
                                     matches[x]++;
                                     if (matches[x] == epslion) m.Add(x);
+                                }
+                                else
+                                {
+                                    saved++;
                                 }
 
                             }
