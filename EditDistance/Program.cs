@@ -60,7 +60,7 @@ namespace EditDistance
             filename[3] = @"c:\data\words.txt";
             filename[4] = dir + "word.format.1000";
             filename[5] = @"c:\data\paper.txt";
-            int indx = 0;
+            int indx = 1;
             Global.exact = true;
 
             ArrayList words = readinput(filename[indx]);

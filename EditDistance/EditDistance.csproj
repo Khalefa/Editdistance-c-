@@ -48,6 +48,7 @@
     <Compile Include="Passjoin\passjoin3.cs" />
     <Compile Include="Passjoin\passjoin2.cs" />
     <Compile Include="Passjoin\passjoin.cs" />
+    <Compile Include="Passjoin\passjoin4.cs" />
     <Compile Include="Radix\ActiveNodes.cs" />
     <Compile Include="Radix\engine.cs" />
     <Compile Include="Radix\Node.cs" />
