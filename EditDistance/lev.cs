@@ -20,7 +20,7 @@ namespace Verification
             }
             int na = a.Length;
             int nb = b.Length;
-
+            if (b.Length < limit) return 0;
             int diff = b.Length - a.Length;
 
             int[,] T = new int[2, b.Length + 1];
@@ -71,9 +71,51 @@ namespace Verification
                     return limit + 1;
                 cur = 1 - cur;
             }
-                        
-
             return  T[1 - cur,nb];
+        }
+        static int min(int a, int b, int c)
+        {
+            int d=a;
+            if (a > b) d = b;
+            if (d > c) return c;
+            return d;
+        }
+        static public int lengthawarever(string r, string s, int th)
+        {
+            if (r.Length > s.Length)
+            {
+                string t = r;
+                r = s;
+                s = t;
+            }
+            
+            int[,] M = new int[r.Length + 1, s.Length + 1];
+            int delta = s.Length - r.Length;
+            for (int i = 0; i < r.Length + 1; i++)
+            {
+                M[0, i] = i;
+                M[i, 0] = i;
+            }
+            for (int i = 0; i < r.Length; i++)
+            {
+                int st=i-(th-delta)/2;
+                if(st<0)st=0;
+                int en = i + (th + delta) / 2;
+                if (en > r.Length) en = r.Length;
+                int e_ij=th+10;
+                for (int j = st; j <= en; j++)
+                {
+                    int d=0;
+                    if (r[i]!=s[j]) d=1;
+                    M[i+1, j+1] = min(M[i, j+1], M[i+1, j], M[i, j ] + d);
+                    int t=M[i+1,j+1]+(s.Length-j-r.Length+i);
+                    if (e_ij > t)
+                        e_ij = t;
+                }
+                if(e_ij>th)return th+1;
+
+            }
+            return M[r.Length,s.Length];
         }
         public static int editdistance0(string x, string y, int th)
         {

@@ -36,12 +36,13 @@ namespace EditDistance
             if (alg == "P3J")
                 p = passjoinIII.ComputeMatch(words, th, eps);
             else
-              if (alg == "P2J")
-                 passjoinII.ComputeMultiMatch(words, th, eps);
-            else
-                if (alg == "MPJ")
-                   p = passjoinIII.ComputeMyMatch(words, th, eps);
-
+                if (alg == "P2J")
+                    passjoinII.ComputeMultiMatch(words, th, eps);
+                else
+                    if (alg == "MPJ")
+                        p = passjoinIII.ComputeMyMatch(words, th, eps);
+                    else if (alg == "HPJ")
+                        p = passjoinIII.ComputeHistMatch(words, th, eps);
 
             Global.resut = p.first;
             Global.count = p.second;
@@ -50,8 +51,17 @@ namespace EditDistance
             Global.time = ts;
             Console.Write(Global.print());
         }
+       public static void test_lev(){
+           string a = "aaa";
+           string b = "abc";
+           int k = 0;
+               k=Verification.Lev.lengthawarever (a, b, 2);
+       }
         static void Main(string[] args)
         {
+            test_lev();
+            return;
+            int th = 3;
             string[] filename = new string[10];
             string dir = @"C:\Users\khalefa\SkyDrive\Alex Work\Work\Edit Distance\datasets\";
             filename[0] = dir + "word.format";
@@ -60,7 +70,7 @@ namespace EditDistance
             filename[3] = @"c:\data\words.txt";
             filename[4] = dir + "word.format.1000";
             filename[5] = @"c:\data\paper.txt";
-            int indx = 1;
+            int indx = 0;
             Global.exact = true;
 
             ArrayList words = readinput(filename[indx]);
@@ -76,37 +86,40 @@ namespace EditDistance
                 sw.WriteLine(Global.header());
             }
             sw.AutoFlush = true;
-            for (int e =   16; e >= 1; e = e / 2)
+            for (int e = 16; e >= 1; e = e / 2)
             {
-                run("P2J", filename[indx], 3, e, words);
+                //run("P2J", filename[indx], 3, e, words);
+                //sw.WriteLine(Global.print());
+                run("HPJ", filename[indx], th, e, words);
                 sw.WriteLine(Global.print());
-                run("P3J", filename[indx], 3, e, words);
+                run("MPJ", filename[indx], th, e, words);
                 sw.WriteLine(Global.print());
-                run("MPJ", filename[indx], 3, e, words);
+                run("P3J", filename[indx], th, e, words);
                 sw.WriteLine(Global.print());
             }
-            /*  for (int e = 1; e < 9; e = e * 2)
-              {
-                  run("PJ", filename[indx], 3, e, words);
-                  sw.WriteLine(Global.print());
-              }*/
-
-
             sw.Close();
-            /*  //get number of grams
-          DateTime t1 = DateTime.Now;
-          Grams.Gram.GetGrams(words, 3);
-          TimeSpan ts1 = DateTime.Now - t1;
-          Console.Write(ts1);
-          */
-            // PairWise.compute(words, 3);
-
-            //Radix.engine.run(words);
-            //ArrayList m= passjoin.getlengths(9, 6);
-            //passjoin.parition("sad", 1);
-            //passjoin.parition("sads", 1);
-            //ArrayList i= passjoin.permute(m);n
         }
     }
 }
+
+/*  for (int e = 1; e < 9; e = e * 2)
+  {
+      run("PJ", filename[indx], 3, e, words);
+      sw.WriteLine(Global.print());
+  }*/
+
+/*  //get number of grams
+DateTime t1 = DateTime.Now;
+Grams.Gram.GetGrams(words, 3);
+TimeSpan ts1 = DateTime.Now - t1;
+Console.Write(ts1);
+*/
+// PairWise.compute(words, 3);
+
+//Radix.engine.run(words);
+//ArrayList m= passjoin.getlengths(9, 6);
+//passjoin.parition("sad", 1);
+//passjoin.parition("sads", 1);
+//ArrayList i= passjoin.permute(m);n
+
 
