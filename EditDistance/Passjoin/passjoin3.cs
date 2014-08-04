@@ -264,7 +264,8 @@ namespace EditDistance.Passjoin
                                 if (indx[x] == j)
                                 {
                                     matches[x]++;
-                                    if (matches[x] == epslion) m.Add(x);
+                                    if (matches[x] == epslion) 
+                                        m.Add(x);
                                 }
                                 else
                                 {
@@ -535,6 +536,7 @@ namespace EditDistance.Passjoin
             invertedlists = new Hashtable();
             invlist_length = new Hashtable();
             words.Sort(new StringComparer());
+            string ts=(string) words[words.Count-1];
             //biuild hist
             Hist[] hists = new Hist[words.Count];
             for (int j = 0; j < words.Count; j++)
@@ -565,7 +567,7 @@ namespace EditDistance.Passjoin
                 //two cases: if s is shorter than threshold
                 if (s.Length >= th + eps)
                 {
-                    //this is ok
+                    //tdasd is ok
                     ss = s;
                 }
                 else if (s.Length < th + 1)
@@ -600,8 +602,17 @@ namespace EditDistance.Passjoin
                 {
                     foreach (int p in l)
                     {
-                        if (Lev.editdistance(s, (string)words[p], th) <= th)
+                        int t=Lev.editdistance(s, (string)words[p], th);
+                        
+                        if (t <= th)
                         {
+                            //int t2=Lev.editdistance(s, (string)words[p], th);
+                            /*if (t != t2)
+                            {
+                                int x = 0;
+                                x++;
+                                t2 = Lev.editdistance(s, (string)words[p], th);
+                            }*/
                             rcnt++;
                         }
                     }

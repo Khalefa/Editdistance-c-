@@ -52,15 +52,17 @@ namespace EditDistance
             Console.Write(Global.print());
         }
        public static void test_lev(){
-           string a = "aaa";
-           string b = "abc";
            int k = 0;
-               k=Verification.Lev.lengthawarever (a, b, 2);
+           string a = "a";//caushik chakrabar";
+           string b = "a_s";//kausic chakduri";
+           
+               k=Verification.Lev.lengthawareVer (a, b,3);
+               Console.WriteLine(k);
        }
         static void Main(string[] args)
         {
-            test_lev();
-            return;
+           //test_lev();
+           // return;
             int th = 3;
             string[] filename = new string[10];
             string dir = @"C:\Users\khalefa\SkyDrive\Alex Work\Work\Edit Distance\datasets\";
@@ -71,7 +73,7 @@ namespace EditDistance
             filename[4] = dir + "word.format.1000";
             filename[5] = @"c:\data\paper.txt";
             int indx = 0;
-            Global.exact = true;
+            Global.exact = false;
 
             ArrayList words = readinput(filename[indx]);
             StreamWriter sw;
@@ -86,7 +88,7 @@ namespace EditDistance
                 sw.WriteLine(Global.header());
             }
             sw.AutoFlush = true;
-            for (int e = 16; e >= 1; e = e / 2)
+            for (int e = 16; e >= 8; e = e / 2)
             {
                 //run("P2J", filename[indx], 3, e, words);
                 //sw.WriteLine(Global.print());
