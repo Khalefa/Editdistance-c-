@@ -35,14 +35,12 @@ namespace EditDistance
 
             if (alg == "P3J")
                 p = passjoinIII.ComputeMatch(words, th, eps);
-            else
-                if (alg == "P2J")
-                    passjoinII.ComputeMultiMatch(words, th, eps);
-                else
-                    if (alg == "MPJ")
-                        p = passjoinIII.ComputeMyMatch(words, th, eps);
-                    else if (alg == "HPJ")
-                        p = passjoinIII.ComputeHistMatch(words, th, eps);
+            else if (alg == "P2J")
+                passjoinII.ComputeMultiMatch(words, th, eps);
+            else if (alg == "MPJ")
+                p = passjoinIII.ComputeMyMatch(words, th, eps);
+            else if (alg == "HPJ")
+                p = passjoinIII.ComputeHistMatch(words, th, eps);
 
             Global.resut = p.first;
             Global.count = p.second;
@@ -51,44 +49,56 @@ namespace EditDistance
             Global.time = ts;
             Console.Write(Global.print());
         }
-       public static void test_lev(){
-           int k = 0;
-           string a = "a";//caushik chakrabar";
-           string b = "a_s";//kausic chakduri";
-           
-               k=Verification.Lev.lengthawareVer (a, b,3);
-               Console.WriteLine(k);
-       }
-        static void Main(string[] args)
+        public static void test_lev()
         {
-           //test_lev();
-           // return;
-            int th = 3;
-            string[] filename = new string[10];
-            string dir = @"C:\Users\khalefa\SkyDrive\Alex Work\Work\Edit Distance\datasets\";
-            filename[0] = dir + "word.format";
-            filename[1] = dir + "dblpall.format";
+            int k = 0;
+            string a = "a";//caushik chakrabar";
+            string b = "a_s";//kausic chakduri";
+
+            k = Verification.Lev.lengthawareVer(a, b, 3);
+            Console.WriteLine(k);
+        }
+        public static void GetStat(){
+            Filenames();
+            int indx = 1;
+            ArrayList words = readinput(filename[indx]);
+            StreamWriter sw = getfile("s.txt");
+            sw.WriteLine(filename[indx]);
+            sw.WriteLine(words.Count);
+            Stats.stat.getstat(words, sw);
+            sw.Close();
+        }
+        static string[] filename;
+        static string data_dir;
+        static void Filenames(){
+            filename = new string[10];
+           data_dir = @"C:\Users\khalefa\SkyDrive\Alex Work\Work\Edit Distance\datasets\";
+            filename[0] = data_dir + "word.format";
+            filename[1] = data_dir + "dblpall.format";
             filename[2] = @"c:\data\tiny.txt";
             filename[3] = @"c:\data\words.txt";
-            filename[4] = dir + "word.format.1000";
+            filename[4] = data_dir + "word.format.1000";
             filename[5] = @"c:\data\paper.txt";
+        }
+        static void runGramExperiments()
+        {
+            int th = 3;
+            int q = 4;
             int indx = 0;
             Global.exact = false;
-
+            Filenames();
             ArrayList words = readinput(filename[indx]);
-            StreamWriter sw;
-            if (File.Exists(dir + "r.txt"))
-            {
-                sw = new StreamWriter(dir + "r.txt", true);
-                sw.WriteLine("--------------------------------------------");
-            }
-            else
-            {
-                sw = new StreamWriter(dir + "r.txt");
-                sw.WriteLine(Global.header());
-            }
-            sw.AutoFlush = true;
-            for (int e = 16; e >= 8; e = e / 2)
+            Grams.Grams.ComputeMatches(words, q, th);
+        }
+        static void runPassJoinExperiments()
+        {
+            int th = 3;
+            int indx = 0;
+            Global.exact = false;
+            Filenames();
+            ArrayList words = readinput(filename[indx]);
+            StreamWriter sw = getfile("rV2.txt");
+            for (int e = 16; e >= 1; e = e / 2)
             {
                 //run("P2J", filename[indx], 3, e, words);
                 //sw.WriteLine(Global.print());
@@ -100,6 +110,31 @@ namespace EditDistance
                 sw.WriteLine(Global.print());
             }
             sw.Close();
+
+        }
+        static StreamWriter getfile(string f)
+        {
+            StreamWriter sw;
+            if (File.Exists(data_dir + f))
+            {
+                sw = new StreamWriter(data_dir + f, true);
+                sw.WriteLine("--------------------------------------------");
+            }
+            else
+            {
+                sw = new StreamWriter(data_dir + f);
+                sw.WriteLine(Global.header());
+            }
+            sw.AutoFlush = true;
+            return sw;
+        }
+        static void Main(string[] args)
+        {
+            //test_lev();
+            // return;
+            runGramExperiments();
+            //GetStat();            
+            
         }
     }
 }

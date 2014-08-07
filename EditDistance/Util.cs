@@ -3,9 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace EditDistance
 {
+
+    public class StringComparer : IComparer
+    {
+        public int Compare(object x, object y)
+        {
+            string sx = (string)x;
+            string sy = (string)y;
+            if (sx.Length > sy.Length) return 1;
+            else if (sx.Length < sy.Length) return -1;
+            else return String.Compare(sx, sy);
+        }
+    }
     public class Util
     {
 
@@ -87,12 +100,17 @@ namespace EditDistance
             for (int i = 0; i < s.Length; i++)
             {
                 string ss="";
-                for (int g = i; g < Math.Min(q, s.Length); g++)
+                for (int g = i; g < Math.Min(i+q, s.Length); g++)
                     ss += s[g];
+                while (ss.Length < q)
+                {
+                    ss += '^';
+                }
                 str[i] = ss;
 
             }
             return str;
         }
+
     }
 }

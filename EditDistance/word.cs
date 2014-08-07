@@ -8,6 +8,10 @@ namespace EditDistance
 {
     class word
     {
+        public word(string s)
+        {
+            w = s;
+        }
      public       string w;
      public int getlen(){
          return w.Length;
@@ -20,9 +24,9 @@ namespace EditDistance
          {
              char cc = c[i];
              int j = cc - 'a';
-             if (j < 13) l2++;
+             if (j < 14) l2++;
          }
-         return w.Length;
+         return l2;
      }
     }
 }

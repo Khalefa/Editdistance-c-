@@ -121,17 +121,7 @@ namespace EditDistance.Passjoin
         public static Hashtable invertedlists = new Hashtable();//stores the inverted listes the keu is a composite of length and 
         public static Hashtable invlists = new Hashtable();
         public static Hashtable invlist_length = new Hashtable();
-        class StringComparer : IComparer
-        {
-            public int Compare(object x, object y)
-            {
-                string sx = (string)x;
-                string sy = (string)y;
-                if (sx.Length > sy.Length) return 1;
-                else if (sx.Length < sy.Length) return -1;
-                else return String.Compare(sx, sy);
-            }
-        }
+    
         public static string[] parition(string s, int th, int eps)
         {
             string[] a = new string[th + eps];

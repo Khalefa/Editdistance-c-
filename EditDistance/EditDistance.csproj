@@ -63,6 +63,7 @@
     <Compile Include="Rtree\Point.cs" />
     <Compile Include="Rtree\Rectangle.cs" />
     <Compile Include="Rtree\RTree.cs" />
+    <Compile Include="Stats\stat.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="word.cs" />
   </ItemGroup>
@@ -72,6 +73,7 @@
   <ItemGroup>
     <Content Include="ideas.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
