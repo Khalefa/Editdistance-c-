@@ -116,6 +116,7 @@ namespace EditDistance.Grams
         public static PairLong ComputeMatches(ArrayList words, int q, int th)
         {
             //compute the count
+            Global.alg = "Gram";
             Hashtable ht = GetCountGrams(words, q);
             Hashtable htw = new Hashtable();
             foreach (string s in words)
@@ -161,7 +162,7 @@ namespace EditDistance.Grams
                 }*/
                 //cnt += p.second;
             }
-            
+            Global.alg = "Gram";
             return pp;
         }
     }

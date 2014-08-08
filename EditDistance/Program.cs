@@ -41,7 +41,7 @@ namespace EditDistance
                 p = passjoinIII.ComputeMyMatch(words, th, eps);
             else if (alg == "HPJ")
                 p = passjoinIII.ComputeHistMatch(words, th, eps);
-            else if(alg=="Gram")
+            else if(alg=="GJ")
                 p=Grams.Grams.ComputeMatches(words, eps, th);
                 
             Global.resut = p.first;
@@ -106,9 +106,9 @@ namespace EditDistance
         }
         static void runExperiments()
         {
-            int th = 3;
+            int th = 2;
             int indx = 0;
-            Global.exact = false;
+            Global.exact = true;
             Filenames();
             ArrayList words = readinput(filename[indx]);
             StreamWriter sw = getfile("rV2.txt");
@@ -123,6 +123,7 @@ namespace EditDistance
                 run("P3J", filename[indx], th, e, words);
                 sw.WriteLine(Global.print());
                 run("GJ", filename[indx], th, e, words);
+                sw.WriteLine(Global.print());
             }
             sw.Close();
 

@@ -24,7 +24,7 @@ namespace EditDistance
         }
         public static string print()
         {
-            return dataset + '\t' + alg + '\t' +ver_alg+ '\t' + threshold + '\t' + epslion + '\t' + exact + '\t' + count + '\t' + resut + '\t' + time;
+            return dataset + '\t' + alg + '\t' +ver_alg+ '\t' + threshold + '\t' + epslion + '\t' + exact + '\t' + count + '\t' + resut + '\t' + time.TotalSeconds;
         }
     }
 }
