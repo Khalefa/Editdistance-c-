@@ -77,8 +77,7 @@ namespace EditDistance
             int[] ht = hist(s);
             int x, y;
             x = y = 0;
-            int[] ar = new int[2];
-           
+            int[] ar = new int[2];          
 
             double d = Math.Pow(2, l + 1);
             if (d > ALPHABET_SIZE) d = Math.Pow(2, Math.Ceiling(Math.Log( ALPHABET_SIZE,2)));
@@ -107,7 +106,6 @@ namespace EditDistance
                     ss += '^';
                 }
                 str[i] = ss;
-
             }
             return str;
         }

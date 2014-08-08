@@ -11,7 +11,7 @@ namespace EditDistance.Passjoin
 {
 
     //we use array instead of hashset for 
-    public class passjoinIIII
+    public class passjoinIV
     {
         [DebuggerDisplay("'{l}' '{l2}' '{i}'")]
         class pair
@@ -277,7 +277,7 @@ namespace EditDistance.Passjoin
             }
             return m;
         }
-
+      
         static public PairLong ComputeMatch(ArrayList words, int th, int eps = 1)
         {
             Global.alg = "P3J";
@@ -286,6 +286,7 @@ namespace EditDistance.Passjoin
             int[] matches_arr = new int[words.Count];
             int[] indx = new int[words.Count];
 
+            
             words.Sort(new WordComparer());
 
             int progress = (int)Math.Ceiling(words.Count / 100.0);

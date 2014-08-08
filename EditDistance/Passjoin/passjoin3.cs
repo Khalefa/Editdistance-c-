@@ -10,21 +10,7 @@ using System.IO;
 namespace EditDistance.Passjoin
 {
 
-    public class PairLong
-    {
-        public long first;
-        public long second;
-        public PairLong(long f, long s)
-        {
-            first = f;
-            second = s;
-        }
-
-        public PairLong()
-        {
-            // TODO: Complete member initialization
-        }
-    }
+    
 
     //we use array instead of hashset for 
     public class passjoinIII
@@ -449,13 +435,13 @@ namespace EditDistance.Passjoin
             invlist_length = new Hashtable();
             words.Sort(new StringComparer());
             int len = 0;
-            int progress = (int)Math.Ceiling(words.Count / 100.0);
+            int progress = (int)Math.Ceiling(words.Count*10000 / 10.0);
             for (int j = (int)(0); j < words.Count; j++)
             {
                 int e = eps;
                 if (j % progress == 0)
                 {
-                    Console.Write(".");
+              //      Console.Write(".");
                 }
 
                 string s = (string)words[j];

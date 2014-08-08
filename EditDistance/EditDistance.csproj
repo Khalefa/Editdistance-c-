@@ -44,6 +44,7 @@
     <Compile Include="Global.cs" />
     <Compile Include="Grams\grams.cs" />
     <Compile Include="lev.cs" />
+    <Compile Include="PairLong.cs" />
     <Compile Include="PairWise.cs" />
     <Compile Include="Passjoin\passjoin3.cs" />
     <Compile Include="Passjoin\passjoin2.cs" />

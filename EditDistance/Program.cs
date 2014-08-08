@@ -41,7 +41,9 @@ namespace EditDistance
                 p = passjoinIII.ComputeMyMatch(words, th, eps);
             else if (alg == "HPJ")
                 p = passjoinIII.ComputeHistMatch(words, th, eps);
-
+            else if(alg=="Gram")
+                p=Grams.Grams.ComputeMatches(words, eps, th);
+                
             Global.resut = p.first;
             Global.count = p.second;
 
@@ -82,15 +84,27 @@ namespace EditDistance
         }
         static void runGramExperiments()
         {
-            int th = 3;
+            StreamWriter sw = getfile("r_Grams.txt");
+            
+
             int q = 4;
             int indx = 0;
             Global.exact = false;
             Filenames();
             ArrayList words = readinput(filename[indx]);
-            Grams.Grams.ComputeMatches(words, q, th);
+            sw.WriteLine("\t q\t th  \t cout \t time " );
+            for (int x = 3; x < 10; x++)
+            
+            for (int t = 0; t < 10; t++)
+            {
+                DateTime tt = DateTime.Now;
+                var cc=Grams.Grams.ComputeMatches(words, x, t);
+                TimeSpan ts = DateTime.Now - tt;
+                sw.WriteLine("Grams:\t" + x + "\t" + t + "\t" + cc+"\t"+ts);
+            }
+            sw.Close();
         }
-        static void runPassJoinExperiments()
+        static void runExperiments()
         {
             int th = 3;
             int indx = 0;
@@ -108,6 +122,7 @@ namespace EditDistance
                 sw.WriteLine(Global.print());
                 run("P3J", filename[indx], th, e, words);
                 sw.WriteLine(Global.print());
+                run("GJ", filename[indx], th, e, words);
             }
             sw.Close();
 
@@ -132,7 +147,7 @@ namespace EditDistance
         {
             //test_lev();
             // return;
-            runGramExperiments();
+            runExperiments();
             //GetStat();            
             
         }
