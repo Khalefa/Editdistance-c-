@@ -122,6 +122,7 @@ namespace Verification
                 if (ib_st <= 0)
                 {                    
                     T[cur, 0] = ia;
+                    ib_st = 0;
                 }
                 ib_st++;
                 int min = oo;

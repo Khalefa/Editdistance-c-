@@ -565,18 +565,25 @@ namespace EditDistance.Passjoin
                 //first remove from l
                 int hist_fitlered=0;
                 Hist h1 = hists[j];
+                
                 for (int i = 0; i < l.Count; i++)
                 {
                     Hist h2 = hists[l[i]];
-                    if (h1.diff(h2) > th) hist_fitlered++;
+                    if (h1.diff(h2) > th)
+                    {
+                        hist_fitlered++;
+                        l[i] = -100;
+                    }
 
                 }
                 candidta_cnt += (l.Count-hist_fitlered);
 
                 if (Global.exact)
                 {
+                    
                     foreach (int p in l)
                     {
+                        if (p < 0) continue;
                         int t=Lev.editdistance(s, (string)words[p], th);
                         
                         if (t <= th)

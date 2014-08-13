@@ -22,7 +22,12 @@ namespace EditDistance
         }
         public PairLong()
         {
-            // TODO: Complete member initialization
+            first = 0;
+            second = 0;
+        }
+        public override string ToString()
+        {
+            return first + "\t" + second;
         }
     }
     

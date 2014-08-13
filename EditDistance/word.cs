@@ -12,21 +12,22 @@ namespace EditDistance
         {
             w = s;
         }
-     public       string w;
-     public int getlen(){
-         return w.Length;
-     }
-     public int getlen2()
-     {
-         int l2 = 0;
-         char []c = w.ToCharArray();
-         for (int i = 0; i < c.Length; i++)
-         {
-             char cc = c[i];
-             int j = cc - 'a';
-             if (j < 14) l2++;
-         }
-         return l2;
-     }
+        public string w;
+        public int getlen()
+        {
+            return w.Length;
+        }
+        public int getlen2()
+        {
+            int l2 = 0;
+            char[] c = w.ToCharArray();
+            for (int i = 0; i < c.Length; i++)
+            {
+                char cc = c[i];
+                int j = cc - 'a';                
+                if (j < 14 && j>=0) l2++;
+            }
+            return l2;
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
-
+using EditDistance.Stats;
 namespace EditDistance
 {
 
@@ -72,6 +72,13 @@ namespace EditDistance
             }
             return a;   
         }
+        static public nPoint getnPoint(string s, int d)
+        {
+            int[] h = hist(s);
+            
+            nPoint p = new nPoint(summarize_hist(h, d-1));
+            return p;
+        }
         static public int[] getPoint(string s,int l)
         {
             int[] ht = hist(s);
@@ -109,6 +116,21 @@ namespace EditDistance
             }
             return str;
         }
+        //get the difference betwee two histograms
+        public static int diff(int []h1, int []h2)
+        {           
+            int d = 0;
+            for (int i = 0; i < h1.Length; i++)
+                d += Math.Abs(h1[i]- h2[i]);
+            return d;
+        }
 
+        public static int absdiff(int[] h1, int[] h2)
+        {
+            int d = 0;
+            for (int i = 0; i < h1.Length; i++)
+                d += h1[i] - h2[i];
+            return Math.Abs(d);
+        }
     }
 }

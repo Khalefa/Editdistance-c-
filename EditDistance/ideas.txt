@@ -1,1 +1,16 @@
-﻿j
+﻿bug with code 1.4 with p in gram
+
+
+what if we are matching documents, each with many words
+
+Later contextual edit distance
+
+
+checkout prefix filtering techniques
+
+
+
+TODO
+statistics
+refactoring
+pass join verfication

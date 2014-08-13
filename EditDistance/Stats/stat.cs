@@ -15,72 +15,150 @@ namespace EditDistance.Stats
             long cnt = 0;
             for (int i = 0; i < hist.Length; i++)
             {
-                for(int i_=i;i_<=Math.Min( i+th,hist.Length-1);i_++)
+                for(int i_=i;i_<=Math.Min(i+th+3,hist.Length-1);i_++)
                 {
-                    if (i_ == i) cnt += hist[i] *( hist[i_] - 1)/2;
+                    if (i_ == i) cnt += hist[i] *(hist[i_] - 1)/2;
                     else
                         if(i_-i<=th)
-                        cnt += hist[i] * (hist[i_] );
+                            cnt += hist[i] *hist[i_];
                 }
             }
             return cnt;
         }
-        public static long get_comparsion(int th, int[,] hist, int min_length)
+
+        public static Hashtable buildquadtree(List<string> words, int d)
         {
+            //iterate throughut the words and add 
+            Hashtable ht = new Hashtable(); // use hash table as the extent is not known
+            foreach (string s in words)
+            {
+                nPoint dim=Util.getnPoint(s, d);
+                if (ht.Contains(dim))
+                {
+                    List<string> l = (List<string>)ht[dim];
+                    l.Add(s);
+                }
+                else
+                {
+                    List<string> l = new List<string>();
+                    l.Add(s);
+                    ht.Add(dim, l);
+                }
+            }
+            return ht;
+        }
+        static long[] cnt(Hashtable ht, int th){
+            //now pairwise compare them
+            long []cnt = new long[th];
+            int ii,jj;
+            ii = 0;
+            
+            foreach (DictionaryEntry  e  in ht )
+            {
+                nPoint p = (nPoint)e.Key;
+                ii++;
+                jj = 0;
+                List<string> v=(List<string>)e.Value;
+                long tmp=v.Count*(v.Count-1) /2;
+                for (int cc = 0; cc < th; cc++)
+                    cnt[cc] += tmp;
+                //sw.WriteLine(p.ToString() +"\t"+v.Count);
+                foreach (DictionaryEntry e2 in ht)
+                {
+                    nPoint p2 = (nPoint)e2.Key;
+                    jj++;
+                    if (p.CompareTo(p2) != 1) continue;
+                    List<string> v2=(List<string>)e2.Value;
+                    long tmp2 = v.Count * v2.Count;
+                    int d1 = p.diff(p2);
+                    int d2 = p.absdiff(p2);
+                    for (int cc = 0; cc < th; cc++)
+                    {
+                        if (d1 <= 2 * cc && d2 <= cc)
+                        {
+                            cnt[cc] += tmp2;
+                        }
+                    }
+                    //else
+                     //   cnt = cnt;
+                }
+            }
+            return cnt;
+        }
+        public static void get_error(ArrayList words)
+        {
+            foreach (string s in words)
+            {
+                nPoint p = Util.getnPoint(s, 2);
+                word w = new word(s);
+
+                if (p.ds[0] != w.getlen2() || (p.ds[0]+p.ds[1])!= w.getlen())
+                {
+                    Console.WriteLine(s);
+                }
+                
+            }
+        }
+        public static long get_comparsion(StreamWriter sw, int th, int[,] hist)
+        {
+            throw new Exception("bugy");
             long cnt = 0;
             for (int i = 0; i < hist.GetLength(0); i++)
             {
                  for (int j = 0; j <=i; j++)
                 {
                     if(hist[i, j]==0)continue;
-                    for (int i_ = i; i_ <= Math.Min( i+2*th,hist.GetLength(0)-1); i_++)
+                    cnt += (hist[i, j] * (hist[i, j] - 1) / 2);
+                    sw.WriteLine("-cs" + i + "\t" + j + "\t" + hist[i, j]);
+                    for (int i_ = i; i_ <hist.GetLength(0); i_++)
                     {
-                        for (int j_ = j; j_ <= Math.Min(j +2* th, hist.GetLength(1) - 1); j_++)
+                        for (int j_ = j; j_ < hist.GetLength(1) ; j_++)
                             if (hist[i_, j_] == 0) continue;
                             else
                             {
-                                if (i == i_ && j == j_)
-                                    cnt += (hist[i, j] * (hist[i, j] - 1) / 2);
-                                else                                
-                                        if (i_ - i <= th)
+                                /*if (i == i_ && j == j_)
+                                {
+                                    //cnt += (hist[i, j] * (hist[i, j] - 1) / 2);
+                                    sw.WriteLine("-cs" + i + "\t" + j +"\t"+hist[i,j]);
+                                }
+                                else*/
+                                    if (i_ - i <= th)
+                                    {
+                                        int z_s = i + 0 - j;
+                                        int z_s2 = i_ + 0 - j_;
+                                        int diff = (Math.Abs(z_s2 - z_s) + i_ - i);
+                                        if (diff <= 2 * th)
                                         {
-                                            int z_s = i + min_length - j;
-                                            int z_s2 = i_ + min_length - j_;
-                                            int diff = (Math.Abs(z_s2 - z_s) + i_ - i) / 2;
-                                            if (diff <= th)
-                                                cnt += hist[i, j] * hist[i_, j_];
+                                            cnt += hist[i, j] * hist[i_, j_];
+                                            sw.WriteLine("-c" + i + "\t" + j + "\t\t " + i_ + "\t" + j_+"\t"+hist[i,j]+"\t"+hist[i_,j_]);
                                         }
+                                    }
                             }
                     }
                 }
             }
             return cnt;
         }
-
-        public static void getstat(ArrayList words, StreamWriter sw)
+        public static void oldstat(StreamWriter sw)
         {
-
-            //build hist of lengeths
-            words.Sort(new StringComparer());
-            int min_length = ((string)words[0]).Length;
-            int max_length = ((string)words[words.Count-1]).Length;
-            int[] hist = new int[max_length - min_length + 1];
-            foreach (string s in words)
-            {
-                hist[s.Length - min_length]++;
-            }
-            for (int i = 0; i < hist.Length; i++)
-            {
-                sw.WriteLine(min_length+i+"\t"+hist[i]);
-            }
-            
-            int [,]h2= new  int[max_length-min_length+1,max_length+1];
+            int max_length, min_length;
+            ArrayList words = new ArrayList();
+            max_length = 4;
+            min_length = 2;
+            int[,] h2 = new int[max_length - min_length + 1, max_length + 1];
+            ArrayList[,] hh = new ArrayList[max_length - min_length + 1, max_length + 1];
             foreach (string s in words)
             {
                 word w = new word(s);
-
-                h2[s.Length-min_length,w.getlen2()]++;
+                if (h2[s.Length - min_length, w.getlen2()] == 0)
+                {
+                    hh[s.Length - min_length, w.getlen2()] = new ArrayList();
+                }
+                h2[s.Length - min_length, w.getlen2()]++;
+                hh[s.Length - min_length, w.getlen2()].Add(s);
             }
+
+            #region too much printing
             if (false)
             {
                 for (int i = 0; i < h2.GetLength(0); i++)
@@ -91,20 +169,52 @@ namespace EditDistance.Stats
                     sw.WriteLine();
                 }
             }
-            //
-            sw.WriteLine("----------------------------------------------------------------------");
-            for(int t=1;t<10;t++)
-                sw.WriteLine("th:"+t+"\t"+get_comparsion(t,hist) +"\t"+get_comparsion(t,h2,min_length));
-             
- 
-            Hashtable ht=Grams.Grams.GetCountGrams(words, 4);
-            sw.WriteLine("gram "+4+"count "+ht.Count);
-            foreach (var x in ht.Keys)
+            #endregion
+            
+        }
+        public static void getstat(ArrayList words, StreamWriter sw)
+        {
+            List<string> ws = new List<string>();
+            //build hist of lengeths
+            words.Sort(new StringComparer());
+            int min_length = ((string)words[0]).Length;
+            int max_length = ((string)words[words.Count - 1]).Length;
+            int[] hist = new int[max_length - min_length + 1];
+            foreach (string s in words)
             {
-                sw.WriteLine(x+"\t"+ht[x]);
-               
+                hist[s.Length - min_length]++;
             }
-
+            for (int i = 0; i < hist.Length; i++)
+            {
+                sw.WriteLine(min_length + i + "\t" + hist[i]);
+            }
+            foreach (string s in words)
+                ws.Add(s);
+            
+            //
+            sw.WriteLine("---------------&&&&&&&&&&&&&&&&&&&&-------------------------------------------------------");
+            Hashtable htt = buildquadtree(ws,3);
+            foreach (DictionaryEntry e in htt)
+            {
+                List<string> v=(List<string>) e.Value;
+                sw.WriteLine(e.Key.ToString() + "\t" +v.Count);
+            }
+            long []cnts = cnt(htt, 10);
+            for (int t = 1; t < 10; t++)
+            {                
+                sw.WriteLine("th:" + t + "\t" + get_comparsion(t, hist) + "\t" + cnts[t-1]);
+                
+            }
+            sw.WriteLine("---------------&&&&&&&&&&&&&&&&&&&&-------------------------------------------------------");
+            //sw.WriteLine("Quadtree selectivety");
+            
+            //Hashtable ht = Grams.Grams.GetCountGrams(words, 4);
+          //  sw.WriteLine("gram " + 4 + "count " + ht.Count);
+            //foreach (var x in ht.Keys)
+            //{
+                // sw.WriteLine(x + "\t" + ht[x]);
+            //}
+           // get_error(words);
         }
     }
 }

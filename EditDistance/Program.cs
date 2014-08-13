@@ -41,9 +41,9 @@ namespace EditDistance
                 p = passjoinIII.ComputeMyMatch(words, th, eps);
             else if (alg == "HPJ")
                 p = passjoinIII.ComputeHistMatch(words, th, eps);
-            else if(alg=="GJ")
-                p=Grams.Grams.ComputeMatches(words, eps, th);
-                
+            else if (alg == "GJ")
+                p = Grams.Grams.ComputeMatches(words, eps, th);
+
             Global.resut = p.first;
             Global.count = p.second;
 
@@ -60,11 +60,12 @@ namespace EditDistance
             k = Verification.Lev.lengthawareVer(a, b, 3);
             Console.WriteLine(k);
         }
-        public static void GetStat(){
+        public static void GetStat()
+        {
             Filenames();
             int indx = 1;
             ArrayList words = readinput(filename[indx]);
-            StreamWriter sw = getfile("s.txt");
+            StreamWriter sw = getfile("s_dpall.txt");
             sw.WriteLine(filename[indx]);
             sw.WriteLine(words.Count);
             Stats.stat.getstat(words, sw);
@@ -72,9 +73,10 @@ namespace EditDistance
         }
         static string[] filename;
         static string data_dir;
-        static void Filenames(){
+        static void Filenames()
+        {
             filename = new string[10];
-           data_dir = @"C:\Users\khalefa\SkyDrive\Alex Work\Work\Edit Distance\datasets\";
+            data_dir = @"C:\Users\khalefa\SkyDrive\Alex Work\Work\Edit Distance\datasets\";
             filename[0] = data_dir + "word.format";
             filename[1] = data_dir + "dblpall.format";
             filename[2] = @"c:\data\tiny.txt";
@@ -85,34 +87,33 @@ namespace EditDistance
         static void runGramExperiments()
         {
             StreamWriter sw = getfile("r_Grams.txt");
-            
 
             int q = 4;
-            int indx = 0;
+            int indx = 1;
             Global.exact = false;
             Filenames();
             ArrayList words = readinput(filename[indx]);
-            sw.WriteLine("\t q\t th  \t cout \t time " );
-            for (int x = 3; x < 10; x++)
-            
-            for (int t = 0; t < 10; t++)
-            {
-                DateTime tt = DateTime.Now;
-                var cc=Grams.Grams.ComputeMatches(words, x, t);
-                TimeSpan ts = DateTime.Now - tt;
-                sw.WriteLine("Grams:\t" + x + "\t" + t + "\t" + cc+"\t"+ts);
-            }
+            sw.WriteLine("\t q\t th  \t cout \t time ");
+            for (int x = 4; x < 10; x++)
+
+                for (int t = 0; t < 10; t++)
+                {
+                    DateTime tt = DateTime.Now;
+                    var cc = Grams.Grams.ComputeMatches(words, x, t);
+                    TimeSpan ts = DateTime.Now - tt;
+                    sw.WriteLine("Grams:\t" + x + "\t" + t + "\t" + cc + "\t" + ts);
+                }
             sw.Close();
         }
         static void runExperiments()
         {
-            int th = 2;
-            int indx = 0;
+            int th = 10;
+            int indx = 1;
             Global.exact = true;
             Filenames();
             ArrayList words = readinput(filename[indx]);
             StreamWriter sw = getfile("rV2.txt");
-            for (int e = 16; e >= 1; e = e / 2)
+            for (int e = 1; e < 16; e = e * 2)
             {
                 //run("P2J", filename[indx], 3, e, words);
                 //sw.WriteLine(Global.print());
@@ -122,15 +123,17 @@ namespace EditDistance
                 sw.WriteLine(Global.print());
                 run("P3J", filename[indx], th, e, words);
                 sw.WriteLine(Global.print());
-                run("GJ", filename[indx], th, e, words);
+                //       run("GJ", filename[indx], th, e, words);
                 sw.WriteLine(Global.print());
             }
+
             sw.Close();
 
         }
         static StreamWriter getfile(string f)
         {
-            StreamWriter sw;
+            StreamWriter sw;           
+
             if (File.Exists(data_dir + f))
             {
                 sw = new StreamWriter(data_dir + f, true);
@@ -148,9 +151,12 @@ namespace EditDistance
         {
             //test_lev();
             // return;
-            runExperiments();
+            GetStat();
+            //runGramExperiments();
+            //runExperiments();
+            //runGramExperiments();
             //GetStat();            
-            
+
         }
     }
 }

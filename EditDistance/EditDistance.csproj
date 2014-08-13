@@ -64,6 +64,7 @@
     <Compile Include="Rtree\Point.cs" />
     <Compile Include="Rtree\Rectangle.cs" />
     <Compile Include="Rtree\RTree.cs" />
+    <Compile Include="Stats\Point.cs" />
     <Compile Include="Stats\stat.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="word.cs" />
