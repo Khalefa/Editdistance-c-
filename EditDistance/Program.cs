@@ -43,6 +43,10 @@ namespace EditDistance
                 p = passjoinIII.ComputeHistMatch(words, th, eps);
             else if (alg == "GJ")
                 p = Grams.Grams.ComputeMatches(words, eps, th);
+            else if (alg == "P4J")
+                p = passjoinIV.ComputeMatch(words, th, eps);
+            else if (alg == "PJ")
+                p = PJ.Compute(words, th);
 
             Global.resut = p.first;
             Global.count = p.second;
@@ -109,22 +113,28 @@ namespace EditDistance
         {
             int th = 10;
             int indx = 1;
-            Global.exact = true;
+            Global.exact = false;
             Filenames();
             ArrayList words = readinput(filename[indx]);
-            StreamWriter sw = getfile("rV2.txt");
+            StreamWriter sw = getfile("r_dblp_a.txt");
+            run("PJ", filename[indx], th, 1, words);
             for (int e = 1; e < 16; e = e * 2)
             {
                 //run("P2J", filename[indx], 3, e, words);
                 //sw.WriteLine(Global.print());
-                run("HPJ", filename[indx], th, e, words);
+                run("P4J", filename[indx], th, e, words);
+                sw.WriteLine(Global.print());
+                
+                /*run("HPJ", filename[indx], th, e, words);
                 sw.WriteLine(Global.print());
                 run("MPJ", filename[indx], th, e, words);
                 sw.WriteLine(Global.print());
+                
                 run("P3J", filename[indx], th, e, words);
-                sw.WriteLine(Global.print());
+                sw.WriteLine(Global.print());*/
+
                 //       run("GJ", filename[indx], th, e, words);
-                sw.WriteLine(Global.print());
+               // sw.WriteLine(Global.print());
             }
 
             sw.Close();
@@ -151,9 +161,9 @@ namespace EditDistance
         {
             //test_lev();
             // return;
-            GetStat();
+            //GetStat();
             //runGramExperiments();
-            //runExperiments();
+            runExperiments();
             //runGramExperiments();
             //GetStat();            
 

@@ -8,10 +8,7 @@ using System.Diagnostics;
 using Verification;
 using System.IO;
 namespace EditDistance.Passjoin
-{
-       
-
-    //we use array instead of hashset for 
+{   //we use array instead of hashset for 
     public class passjoinIII
     {
 
@@ -154,7 +151,6 @@ namespace EditDistance.Passjoin
                 }
                 LL.Clear();
             }
-
         }
         static invertedList GetandCreateList(Hashtable ht, int i, int len)
         {
@@ -418,8 +414,7 @@ namespace EditDistance.Passjoin
                 #endregion
                 len = s.Length;
             }
-
-
+            
             return new PairLong(rcnt, candidta_cnt);
         }
         static public PairLong ComputeMyMatch(ArrayList words, int th, int eps = 1)
@@ -492,7 +487,6 @@ namespace EditDistance.Passjoin
                 AddPart(invlists, ss, j, ps1);
                 string[] ps = parition(ss, th, e);
                 AddPart(invertedlists, ss, j, ps);
-
                 #endregion
                 len = s.Length;
             }
