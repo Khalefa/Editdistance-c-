@@ -1,6 +1,6 @@
 echo "using System;" > version.cs
 echo "namespace EditDistance{" >> version.cs
 echo "public class version" >> version.cs
-echo  '{ static public  string version="'`git rev-parse HEAD`'";};}' >>version.cs
+echo  '{ static public  string id="'`git rev-parse HEAD`'";};}' >>version.cs
 
 mv version.cs EditDistance/version.cs
