@@ -172,11 +172,8 @@ namespace EditDistance.Stats
             #endregion
             
         }
-        public static void getstat(ArrayList words, StreamWriter sw)
+        static int[] gethist_onedim(ArrayList words, StreamWriter sw)
         {
-            List<string> ws = new List<string>();
-            //build hist of lengeths
-            words.Sort(new StringComparer());
             int min_length = ((string)words[0]).Length;
             int max_length = ((string)words[words.Count - 1]).Length;
             int[] hist = new int[max_length - min_length + 1];
@@ -188,17 +185,34 @@ namespace EditDistance.Stats
             {
                 sw.WriteLine(min_length + i + "\t" + hist[i]);
             }
+            return hist;
+        }
+        static Hashtable  gethist_ndim(ArrayList words, StreamWriter sw,int n){
+            List<string> ws = new List<string>();
             foreach (string s in words)
                 ws.Add(s);
             
             //
             sw.WriteLine("---------------&&&&&&&&&&&&&&&&&&&&-------------------------------------------------------");
-            Hashtable htt = buildquadtree(ws,3);
+            sw.WriteLine("hash for " + Math.Pow(2 , n));
+            Hashtable htt = buildquadtree(ws,n);
             foreach (DictionaryEntry e in htt)
             {
                 List<string> v=(List<string>) e.Value;
                 sw.WriteLine(e.Key.ToString() + "\t" +v.Count);
             }
+            return htt;
+        }
+        public static void getstat(ArrayList words, StreamWriter sw)
+        {
+            
+            //build hist of lengeths
+            words.Sort(new StringComparer());
+            /*
+             * 
+             * int []hist=gethist_onedim(words,sw);
+            Hashtable htt=gethist_ndim(words,sw,3);
+            
             long []cnts = cnt(htt, 10);
             for (int t = 1; t < 10; t++)
             {                
@@ -206,14 +220,16 @@ namespace EditDistance.Stats
                 
             }
             sw.WriteLine("---------------&&&&&&&&&&&&&&&&&&&&-------------------------------------------------------");
-            //sw.WriteLine("Quadtree selectivety");
-            
+            */
+            sw.WriteLine("Prefix selectivety");
+            Hashtable ht =prefix.getprefix(words, 10);
+            foreach (var x in ht.Keys)
+            {
+             sw.WriteLine(x + "\t" + ht[x]);
+            }
             //Hashtable ht = Grams.Grams.GetCountGrams(words, 4);
           //  sw.WriteLine("gram " + 4 + "count " + ht.Count);
-            //foreach (var x in ht.Keys)
-            //{
-                // sw.WriteLine(x + "\t" + ht[x]);
-            //}
+            
            // get_error(words);
         }
     }

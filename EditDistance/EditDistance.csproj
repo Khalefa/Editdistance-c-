@@ -31,6 +31,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'R|AnyCPU'">
+    <OutputPath>bin\R\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -51,6 +61,7 @@
     <Compile Include="Passjoin\passjoin4.cs" />
     <Compile Include="Passjoin\PJ.cs" />
     <Compile Include="Passjoin\util.cs" />
+    <Compile Include="prefixs.cs" />
     <Compile Include="Radix\ActiveNodes.cs" />
     <Compile Include="Radix\engine.cs" />
     <Compile Include="Radix\Node.cs" />
@@ -68,6 +79,7 @@
     <Compile Include="Stats\Point.cs" />
     <Compile Include="Stats\stat.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="versoin.cs" />
     <Compile Include="word.cs" />
   </ItemGroup>
   <ItemGroup>

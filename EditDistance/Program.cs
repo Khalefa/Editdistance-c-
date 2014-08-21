@@ -64,13 +64,13 @@ namespace EditDistance
             k = Verification.Lev.lengthawareVer(a, b, 3);
             Console.WriteLine(k);
         }
-        public static void GetStat()
+        public static void GetStat(string filename)
         {
-            Filenames();
-            int indx = 1;
-            ArrayList words = readinput(filename[indx]);
-            StreamWriter sw = getfile("s_dpall.txt");
-            sw.WriteLine(filename[indx]);
+            //Filenames();
+            //int indx =1;
+            ArrayList words = readinput(filename);
+            StreamWriter sw = getfile(filename+"s.txt");
+            sw.WriteLine(filename);
             sw.WriteLine(words.Count);
             Stats.stat.getstat(words, sw);
             sw.Close();
@@ -109,29 +109,30 @@ namespace EditDistance
                 }
             sw.Close();
         }
-        static void runExperiments()
+        static void runExperiments(string filename, int th)
         {
-            int th = 10;
-            int indx = 1;
-            Global.exact = false;
-            Filenames();
-            ArrayList words = readinput(filename[indx]);
-            StreamWriter sw = getfile("r_dblp_a.txt");
-            run("PJ", filename[indx], th, 1, words);
+            //int th = 5;
+            //int indx = 0;
+            Global.exact = true;
+            //Filenames();
+            ArrayList words = readinput(filename);
+            StreamWriter sw = getfile("r_s_a.txt");
+            run("PJ", filename, th, 1, words);
+            sw.WriteLine(Global.print());
             for (int e = 1; e < 16; e = e * 2)
             {
                 //run("P2J", filename[indx], 3, e, words);
                 //sw.WriteLine(Global.print());
-                run("P4J", filename[indx], th, e, words);
+                run("P4J", filename, th, e, words);
                 sw.WriteLine(Global.print());
                 
-                /*run("HPJ", filename[indx], th, e, words);
+                run("HPJ", filename, th, e, words);
                 sw.WriteLine(Global.print());
-                run("MPJ", filename[indx], th, e, words);
+                run("MPJ", filename, th, e, words);
                 sw.WriteLine(Global.print());
                 
-                run("P3J", filename[indx], th, e, words);
-                sw.WriteLine(Global.print());*/
+                run("P3J", filename, th, e, words);
+                sw.WriteLine(Global.print());
 
                 //       run("GJ", filename[indx], th, e, words);
                // sw.WriteLine(Global.print());
@@ -161,9 +162,11 @@ namespace EditDistance
         {
             //test_lev();
             // return;
-            //GetStat();
+            if(args[0]=="-s")
+            GetStat(args[1]);
             //runGramExperiments();
-            runExperiments();
+            else if (args[0]=="-p")
+            runExperiments(args[1], int.Parse(args[2]));
             //runGramExperiments();
             //GetStat();            
 

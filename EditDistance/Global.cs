@@ -20,11 +20,11 @@ namespace EditDistance
 
         public static string header()
         {
-            return "dataset\talg\tver_alg\tth\teps\texact\tcount\tresult\ttime";
+            return "version\tdataset\talg\tver_alg\tth\teps\texact\tcount\tresult\ttime";
         }
         public static string print()
         {
-            return dataset + '\t' + alg + '\t' +ver_alg+ '\t' + threshold + '\t' + epslion + '\t' + exact + '\t' + count + '\t' + resut + '\t' + time.TotalSeconds;
+            return EditDistance.versoin.version+'\t'+ dataset + '\t' + alg + '\t' +ver_alg+ '\t' + threshold + '\t' + epslion + '\t' + exact + '\t' + count + '\t' + resut + '\t' + time.TotalSeconds;
         }
     }
 }
