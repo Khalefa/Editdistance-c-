@@ -79,7 +79,7 @@
     <Compile Include="Stats\Point.cs" />
     <Compile Include="Stats\stat.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="versoin.cs" />
+    <Compile Include="version.cs" />
     <Compile Include="word.cs" />
   </ItemGroup>
   <ItemGroup>
