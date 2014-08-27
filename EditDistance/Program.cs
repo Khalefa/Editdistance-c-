@@ -15,11 +15,13 @@ namespace EditDistance
         static ArrayList readinput(string file)
         {
             HashSet<string> words = new HashSet<string>();
-
+            //long x=0;
             StreamReader r = new StreamReader(file);
             while (!r.EndOfStream)
             {
+                //if(x%10==0)
                 words.Add(r.ReadLine().ToLower());
+                //x++;
             }
             r.Close();
             return new ArrayList(words.ToArray<string>());
@@ -38,7 +40,7 @@ namespace EditDistance
             else if (alg == "P2J")
                 passjoinII.ComputeMultiMatch(words, th, eps);
             else if (alg == "MPJ")
-                p = passjoinIII.ComputeMyMatch(words, th, eps);
+                p = passjoinIV.ComputeMyMatch(words, th, eps);
             else if (alg == "HPJ")
                 p = passjoinIII.ComputeHistMatch(words, th, eps);
             else if (alg == "GJ")
@@ -116,23 +118,23 @@ namespace EditDistance
             Global.exact = true;
             //Filenames();
             ArrayList words = readinput(filename);
-            StreamWriter sw = getfile("r_s_a.txt");
+            StreamWriter sw = getfile(filename+"r.txt");
             run("PJ", filename, th, 1, words);
             sw.WriteLine(Global.print());
             for (int e = 1; e < 16; e = e * 2)
             {
                 //run("P2J", filename[indx], 3, e, words);
                 //sw.WriteLine(Global.print());
-                run("P4J", filename, th, e, words);
+               /* run("P4J", filename, th, e, words);
                 sw.WriteLine(Global.print());
                 
                 run("HPJ", filename, th, e, words);
-                sw.WriteLine(Global.print());
+                sw.WriteLine(Global.print());*/
                 run("MPJ", filename, th, e, words);
                 sw.WriteLine(Global.print());
                 
-                run("P3J", filename, th, e, words);
-                sw.WriteLine(Global.print());
+                //run("P3J", filename, th, e, words);
+                //sw.WriteLine(Global.print());
 
                 //       run("GJ", filename[indx], th, e, words);
                // sw.WriteLine(Global.print());
@@ -145,14 +147,14 @@ namespace EditDistance
         {
             StreamWriter sw;           
 
-            if (File.Exists(data_dir + f))
+            if (File.Exists( f))
             {
-                sw = new StreamWriter(data_dir + f, true);
+                sw = new StreamWriter(f, true);
                 sw.WriteLine("--------------------------------------------");
             }
             else
             {
-                sw = new StreamWriter(data_dir + f);
+                sw = new StreamWriter(  f);
                 sw.WriteLine(Global.header());
             }
             sw.AutoFlush = true;

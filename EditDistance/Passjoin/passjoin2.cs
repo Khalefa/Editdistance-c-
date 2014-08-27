@@ -11,29 +11,6 @@ namespace EditDistance.Passjoin
 {
     public class passjoinII
     {
-        [DebuggerDisplay("'{l}' '{i}'")]
-        class pair
-        {
-            public int l;
-            public int i;
-            public pair()
-            {
-            }
-            public pair(int l, int i)
-            {
-                this.l = l;
-                this.i = i;
-            }
-            public override int GetHashCode()
-            {
-                return l.GetHashCode() * i.GetHashCode();
-            }
-            public override bool Equals(object obj)
-            {
-                pair p = (pair)obj;
-                return p.l == l && p.i == i;
-            }
-        }
         class invertedList
         {
             public Hashtable ht = new Hashtable();

@@ -33,11 +33,10 @@ namespace EditDistance
         }
     }
     
-    [DebuggerDisplay("'{l}' '{l2}' '{i}'")]
+    [DebuggerDisplay("'{l}' '{i}'")]
     class pair
     {
         public int l;
-        public int l2;
         public int i;
         public pair()
         {

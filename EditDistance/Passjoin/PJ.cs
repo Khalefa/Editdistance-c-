@@ -14,10 +14,10 @@ using Verification;
 using System.IO;
 namespace EditDistance.Passjoin
 {
- public class PJ
-{
-        public static Hashtable invertedlists = new Hashtable();//stores the inverted listes the keu is a composite of length and 
-        public static Hashtable invlist_length = new Hashtable();        
+    public class PJ
+    {
+        public static Hashtable invertedlists = new Hashtable();//stores the inverted listes the key is a composite of length and 
+        public static Hashtable invlist_length = new Hashtable();
         public static string[] parition(string s, int th, int eps)
         {
             string[] a = new string[th + eps];
@@ -137,12 +137,12 @@ namespace EditDistance.Passjoin
                 m++;
             }
         }
-        static public PairLong getPassJoinMatches( int th, string s, Hashtable ht, int j, int[] matches, int[] indx, ref  ArrayList words)
+        static public PairLong getPassJoinMatches(int th, string s, Hashtable ht, int j, int[] matches, int[] indx, ref  ArrayList words)
         {
             long rcnt = 0;
             long candidta_cnt = 0;
-                
-            for (int l = s.Length - th; l <= s.Length; l++)
+
+            for (int l = Math.Max (s.Length - th,1); l <= s.Length; l++)
             {
                 int delta = s.Length - l;
                 for (int i = 0; i < th + 1; i++)
@@ -152,8 +152,8 @@ namespace EditDistance.Passjoin
                     if (L.length == 0) continue;
                     int pi = L.start;
                     //iterate throw
-                      int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th+1 - i-1));
-                      int upperbound = (int)Math.Min(pi + (i + 1 - 1), pi + delta + (th+1 - i-1));
+                    int lowerbound = (int)Math.Max(pi - (i + 1 - 1), pi + delta - (th + 1 - i - 1));
+                    int upperbound = (int)Math.Min(pi + (i + 1 - 1), pi + delta + (th + 1 - i - 1));
                     lowerbound = (int)Math.Max(0, lowerbound);
                     upperbound = (int)Math.Min(s.Length - L.length, upperbound);
 
@@ -165,15 +165,22 @@ namespace EditDistance.Passjoin
                             List<int> il = (List<int>)L.ht[tmp];
                             foreach (int x in il)
                             {
-                                if (indx[x] != j){
+                                if (indx[x] != j)
+                                {
                                     indx[x] = j;
                                     matches[x] = 1;
-                                
+
                                     if (Global.exact)
                                     {
                                         candidta_cnt++;
                                         int t = Verification.Lev.editdistance2(s, (string)words[x], th, k, pi, L.length);
-                                        if (t <= th)  rcnt++;
+
+                                        if (t <= th)
+                                        {
+                                            rcnt++;
+                                            //Console.WriteLine(s + ":" + (string)words[x]);
+
+                                        }
                                     }
                                 }
                             }
@@ -181,7 +188,7 @@ namespace EditDistance.Passjoin
                     }
                 }
             }
-            return new PairLong(rcnt,candidta_cnt);;
+            return new PairLong(rcnt, candidta_cnt); ;
         }
         static public PairLong Compute(ArrayList words, int th)
         {
@@ -189,13 +196,21 @@ namespace EditDistance.Passjoin
             Global.alg = "Passjoin";
             int[] matches_arr = new int[words.Count];
             int[] indx = new int[words.Count];
-
+            // 
+            for (int i = 0; i < words.Count; i++)
+            {
+                string s = (string)words[i];
+                string ss=s;
+                int e = 1;
+                adjust_string(s, ref ss, th, ref e);
+                words[i] = ss;
+            }
             words.Sort(new WordComparer());
 
             int progress = (int)Math.Ceiling(words.Count / 100.0);
             int len = 0;
             for (int j = (int)(0); j < words.Count; j++)
-            {                
+            {
                 if (j % progress == 0)
                 {
                     Console.Write(".");
@@ -211,7 +226,11 @@ namespace EditDistance.Passjoin
                 }
                 p = p + getPassJoinMatches(th, s, invertedlists, j, matches_arr, indx, ref words);
                 #region parition
-                string[] ps1 = parition(s, th,1);
+                //string ss=s;
+                //int e = 2;
+               // adjust_string(s, ref ss, th, ref e);
+                
+                string[] ps1 = parition(s, th, 1);
                 //adding parition to the index
                 AddPart(invertedlists, s, j, ps1);
                 #endregion
@@ -220,7 +239,7 @@ namespace EditDistance.Passjoin
             invertedlists = new Hashtable();
             return p;
         }
-        }
+    }
 }
 
 
