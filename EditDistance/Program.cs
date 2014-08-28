@@ -26,7 +26,7 @@ namespace EditDistance
             r.Close();
             return new ArrayList(words.ToArray<string>());
         }
-        static void run(string alg, string dataset, int th, int eps, ArrayList words)
+        static void run(string alg, string dataset, int th, int eps, ArrayList words, StreamWriter sw)
         {
             Global.dataset = dataset;
             Global.threshold = th;
@@ -40,7 +40,7 @@ namespace EditDistance
             else if (alg == "P2J")
                 passjoinII.ComputeMultiMatch(words, th, eps);
             else if (alg == "MPJ")
-                p = passjoinIV.ComputeMyMatch(words, th, eps);
+                p = passjoinIV.ComputeMyMatch(sw,words, th, eps);
             else if (alg == "HPJ")
                 p = passjoinIII.ComputeHistMatch(words, th, eps);
             else if (alg == "GJ")
@@ -48,7 +48,7 @@ namespace EditDistance
             else if (alg == "P4J")
                 p = passjoinIV.ComputeMatch(words, th, eps);
             else if (alg == "PJ")
-                p = PJ.Compute(words, th);
+                p = PJ.Compute(words, th,sw);
 
             Global.resut = p.first;
             Global.count = p.second;
@@ -119,9 +119,7 @@ namespace EditDistance
             //Filenames();
             ArrayList words = readinput(filename);
             StreamWriter sw = getfile(filename+"r.txt");
-            run("PJ", filename, th, 1, words);
-            sw.WriteLine(Global.print());
-            for (int e = 1; e < 16; e = e * 2)
+            for (int e = 1; e < 18; e = e * 1226)
             {
                 //run("P2J", filename[indx], 3, e, words);
                 //sw.WriteLine(Global.print());
@@ -130,7 +128,7 @@ namespace EditDistance
                 
                 run("HPJ", filename, th, e, words);
                 sw.WriteLine(Global.print());*/
-                run("MPJ", filename, th, e, words);
+                run("MPJ", filename, th, e, words,sw);
                 sw.WriteLine(Global.print());
                 
                 //run("P3J", filename, th, e, words);
@@ -139,7 +137,9 @@ namespace EditDistance
                 //       run("GJ", filename[indx], th, e, words);
                // sw.WriteLine(Global.print());
             }
-
+            run("PJ", filename, th, 1, words, sw);
+            sw.WriteLine(Global.print());
+          
             sw.Close();
 
         }

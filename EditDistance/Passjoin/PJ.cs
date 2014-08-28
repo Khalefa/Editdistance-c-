@@ -137,7 +137,7 @@ namespace EditDistance.Passjoin
                 m++;
             }
         }
-        static public PairLong getPassJoinMatches(int th, string s, Hashtable ht, int j, int[] matches, int[] indx, ref  ArrayList words)
+        static public PairLong getPassJoinMatches(int th, string s, Hashtable ht, int j, int[] matches, int[] indx, ref  ArrayList words, StreamWriter sw)
         {
             long rcnt = 0;
             long candidta_cnt = 0;
@@ -169,18 +169,28 @@ namespace EditDistance.Passjoin
                                 {
                                     indx[x] = j;
                                     matches[x] = 1;
-
+                                    candidta_cnt++;
                                     if (Global.exact)
                                     {
-                                        candidta_cnt++;
-                                        int t = Verification.Lev.editdistance2(s, (string)words[x], th, k, pi, L.length);
-
-                                        if (t <= th)
+                                      //  int t=Lev.editdistance(s.Trim(), (string)words[x], th);
+                                        int tt = Verification.Lev.editdistance2(s, (string)words[x], th, k, pi, L.length);
+                                        if (tt <= th)
                                         {
                                             rcnt++;
-                                            //Console.WriteLine(s + ":" + (string)words[x]);
+                                            //sw.WriteLine(s + "\t" + (string)words[x]);
 
                                         }
+                                        else
+                                        {
+                                            indx[x] = j - 1;
+                                            matches[x] = 0;
+                                        }
+                                        /*if ( (t<=th && tt >th) || (tt<=th && t>th) ){
+                                            int to = 0;
+                                            to++;
+                                            Verification.Lev.editdistance2(s, (string)words[x], th, k, pi, L.length);
+                                        }*/
+                                        
                                     }
                                 }
                             }
@@ -190,7 +200,7 @@ namespace EditDistance.Passjoin
             }
             return new PairLong(rcnt, candidta_cnt); ;
         }
-        static public PairLong Compute(ArrayList words, int th)
+        static public PairLong Compute(ArrayList words, int th, StreamWriter sw)
         {
             PairLong p = new PairLong();
             Global.alg = "Passjoin";
@@ -224,7 +234,7 @@ namespace EditDistance.Passjoin
                         cleanList(s.Length - th - 1);
                     }
                 }
-                p = p + getPassJoinMatches(th, s, invertedlists, j, matches_arr, indx, ref words);
+                p = p + getPassJoinMatches(th, s, invertedlists, j, matches_arr, indx, ref words,sw);
                 #region parition
                 //string ss=s;
                 //int e = 2;

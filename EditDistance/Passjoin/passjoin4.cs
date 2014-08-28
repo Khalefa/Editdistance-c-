@@ -283,10 +283,11 @@ namespace EditDistance.Passjoin
                 }
             }
         }
-        static public List<int> getMatches_withmemo(int epslion, int th, string s, Hashtable ht, int j, int[] matches, int[] indx)
+        static public List<int> getMatches_withmemo(int epslion, int th, string s, Hashtable ht, int j, int[] matches, int[] indx, ArrayList words)
         {
             List<int> m = new List<int>();
-            for (int l = s.Length - th; l <= s.Length; l++)
+
+            for (int l = Math.Max(s.Length - th,1); l <= s.Length; l++)
             {
                 for (int i = 0; i < th + epslion; i++)
                 {
@@ -324,9 +325,19 @@ namespace EditDistance.Passjoin
                     }
                 }
             }
+            //find the wrong matched
+            /*if(j>0)
+            for (int i = 0; i < indx.Length; i++)
+            {
+                if((indx[i]==j) && (matches[i]<epslion) ){
+                    if (Lev.editdistance((string)words[i], (string)words[j], th) <=th)
+                
+                    Console.WriteLine("aa");
+                }
+            }*/
             return m;
         }
-        static public PairLong ComputeMyMatch(ArrayList words, int th, int eps = 1)
+        static public PairLong ComputeMyMatch(StreamWriter sw, ArrayList words, int th, int eps = 1)
         {
             Global.alg = "MPJ4";
             long rcnt = 0;
@@ -357,20 +368,16 @@ namespace EditDistance.Passjoin
 
                 int e = adjust_len(s, th, eps);
                 
-                
-                //string ss = s;
-                //adjust_string(s, ref ss, th, ref e);
-                
                 getMatches_noreturn(th, s, invlists, j, matches_arr, indx);
-                List<int> l = getMatches_withmemo(e, th, s, invertedlists, j, matches_arr, indx);
+                List<int> l = getMatches_withmemo(e, th, s, invertedlists, j, matches_arr, indx,words);
                 candidta_cnt += l.Count;
                 if (Global.exact)
                 {
                     foreach (int p in l)
                     {
-                        if (Lev.editdistance(s, (string)words[p], th) <= th)
+                        if (Lev.editdistance(s.Trim(), (string)words[p], th) <= th)
                         {
-                            //Console.WriteLine(s + "::::" + (string)words[p]);
+                            sw.WriteLine(eps+"\t"+ s + "\t" + (string)words[p]);
                             rcnt++;
                         }
                     }

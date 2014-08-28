@@ -29,10 +29,12 @@ namespace Verification
             int dl = al - bl;
             if (dl < 0) dl = -dl;
             if (al > limit && dl > limit) return 0;
-            if (ia > 0) a1=a.Substring(0, ia - 1);
-            if (ib > 0) b1=b.Substring(0, ib - 1);
+            if (ia > 0) a1=a.Substring(0, ia );
+            if (ib > 0) b1=b.Substring(0, ib );
             if(ia+len<al) a2 = a.Substring( ia +len);
             if(ib+len<bl) b2 = b.Substring(ib + len);
+            a2=a2.Trim();
+            b2 = b2.Trim();
             int dl1 = a1.Length - b1.Length;
             int dl2 = a2.Length - b2.Length;
             if (dl1 < 0) dl1 = -dl1;
@@ -45,7 +47,7 @@ namespace Verification
         }
         public static int editdistance(string a, string b, int limit)
         {
-            return Leditdistance(a, b, limit);
+            return Leditdistance(a.Trim(), b.Trim(), limit);
         }
        
         public static int Leditdistance(string a, string b, int limit)
