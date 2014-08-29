@@ -377,7 +377,7 @@ namespace EditDistance.Passjoin
                     {
                         if (Lev.editdistance(s.Trim(), (string)words[p], th) <= th)
                         {
-                            sw.WriteLine(eps+"\t"+ s + "\t" + (string)words[p]);
+                            //sw.WriteLine(eps+"\t"+ s + "\t" + (string)words[p]);
                             rcnt++;
                         }
                     }

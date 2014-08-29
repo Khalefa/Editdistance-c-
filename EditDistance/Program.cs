@@ -119,15 +119,15 @@ namespace EditDistance
             //Filenames();
             ArrayList words = readinput(filename);
             StreamWriter sw = getfile(filename+"r.txt");
-            for (int e = 1; e < 18; e = e * 1226)
+            for (int e = 1; e < 18; e = e * 2)
             {
                 //run("P2J", filename[indx], 3, e, words);
                 //sw.WriteLine(Global.print());
-               /* run("P4J", filename, th, e, words);
+               run("P4J", filename, th, e, words,sw);
                 sw.WriteLine(Global.print());
                 
-                run("HPJ", filename, th, e, words);
-                sw.WriteLine(Global.print());*/
+                run("HPJ", filename, th, e, words,sw);
+                sw.WriteLine(Global.print());
                 run("MPJ", filename, th, e, words,sw);
                 sw.WriteLine(Global.print());
                 
