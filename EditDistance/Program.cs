@@ -19,9 +19,11 @@ namespace EditDistance
             StreamReader r = new StreamReader(file);
             while (!r.EndOfStream)
             {
-                //if(x%10==0)
-                words.Add(r.ReadLine().ToLower());
-                //x++;
+                string s = r.ReadLine().ToLower();
+
+              //  if (s.Length > 8)
+                words.Add(s);
+                
             }
             r.Close();
             return new ArrayList(words.ToArray<string>());
@@ -117,6 +119,8 @@ namespace EditDistance
             //int indx = 0;
             Global.exact = true;
             //Filenames();
+            //Global.ver_alg = "length";
+            Global.ver_alg = "basic";
             ArrayList words = readinput(filename);
             StreamWriter sw = getfile(filename+"r.txt");
             for (int e = 1; e < 18; e = e * 2)

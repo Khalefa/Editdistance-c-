@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using Verification;
 using System.IO;
@@ -170,27 +165,33 @@ namespace EditDistance.Passjoin
                                     indx[x] = j;
                                     matches[x] = 1;
                                     candidta_cnt++;
-                                    if (Global.exact)
-                                    {
-                                      //  int t=Lev.editdistance(s.Trim(), (string)words[x], th);
-                                        int tt = Verification.Lev.editdistance2(s, (string)words[x], th, k, pi, L.length);
-                                        if (tt <= th)
+                                    if(Global.ver_alg=="length"){
+                                        if (Global.exact)
                                         {
-                                            rcnt++;
-                                            //sw.WriteLine(s + "\t" + (string)words[x]);
+                                            //  int t=Lev.editdistance(s.Trim(), (string)words[x], th);
+                                            int tt = Verification.Lev.editdistance2(s, (string)words[x], th, k, pi, L.length);
+                                            if (tt <= th)
+                                            {
+                                                rcnt++;
+                                                //sw.WriteLine(s + "\t" + (string)words[x]);
+                                            }
+                                            else
+                                            {
+                                                indx[x] = j - 1;
+                                                matches[x] = 0;
+                                            }
+                                        }
 
-                                        }
-                                        else
-                                        {
-                                            indx[x] = j - 1;
-                                            matches[x] = 0;
-                                        }
-                                        /*if ( (t<=th && tt >th) || (tt<=th && t>th) ){
-                                            int to = 0;
-                                            to++;
-                                            Verification.Lev.editdistance2(s, (string)words[x], th, k, pi, L.length);
-                                        }*/
-                                        
+
+                                    }
+                                    else if (Global.ver_alg == "basic")
+                                    {
+                                         int t=Lev.editdistance(s.Trim(), (string)words[x], th);
+                                         if (t <= th)
+                                         {
+                                             rcnt++;
+                                         }
+                                     
                                     }
                                 }
                             }
@@ -206,7 +207,7 @@ namespace EditDistance.Passjoin
             Global.alg = "Passjoin";
             int[] matches_arr = new int[words.Count];
             int[] indx = new int[words.Count];
-            // 
+            // adjust string lengths
             for (int i = 0; i < words.Count; i++)
             {
                 string s = (string)words[i];
@@ -236,9 +237,6 @@ namespace EditDistance.Passjoin
                 }
                 p = p + getPassJoinMatches(th, s, invertedlists, j, matches_arr, indx, ref words,sw);
                 #region parition
-                //string ss=s;
-                //int e = 2;
-               // adjust_string(s, ref ss, th, ref e);
                 
                 string[] ps1 = parition(s, th, 1);
                 //adding parition to the index

@@ -17,6 +17,7 @@ namespace EditDistance
         public static bool exact;
         public static string dataset;
         public static string ver_alg;
+        
 
         public static string header()
         {

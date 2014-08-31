@@ -196,10 +196,37 @@ namespace EditDistance.Passjoin
                                 }
                                 if(indx[x]==j && matches[x]==eps){
                                     candidta_cnt++;
-                                    if (Global.exact)
-                                    {                                        
-                                        int t = Verification.Lev.editdistance2((string)words[j], (string)words[x], th, k, pi, L.length);
-                                        if (t <= th)  rcnt++;
+                                    if (Global.ver_alg == "length")
+                                    {
+                                        if (Global.exact)
+                                        {
+                                            int t = Verification.Lev.editdistance2((string)words[j], (string)words[x], th, k, pi, L.length);
+                                            if (t <= th)
+                                            {
+                                                rcnt++;
+
+                                            }
+                                            else
+                                            {
+                                                matches[x]--;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (Global.ver_alg == "basic")
+                                        {
+                                            if (Global.exact)
+                                            {
+                                                int t = Verification.Lev.editdistance((string)words[j], (string)words[x], th);
+                                                if (t <= th)
+                                                {
+                                                    rcnt++;
+
+                                                }
+
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -216,7 +243,17 @@ namespace EditDistance.Passjoin
             int[] matches_arr = new int[words.Count];
             int[] indx = new int[words.Count];
 
+            
+            for (int i = 0; i < words.Count; i++)
+            {
+                string s = (string)words[i];
+                string ss = s;
+                int e = 1;
+                adjust_string(s, ref ss, th, ref e);
+                words[i] = ss;
+            }
             words.Sort(new WordComparer());
+            
 
             int progress = (int)Math.Ceiling(words.Count / 100.0);
             int len = 0;
